@@ -163,22 +163,22 @@
             min-height: 500px;
         }
         
-        .tile {
-            width: 80px;
-            height: 100px;
-            background: linear-gradient(145deg, #e8d0b0, #b08968);
-            border: 3px solid #c49a6c;
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.4);
-            position: absolute;
-            overflow: hidden;
-            padding: 5px;
-        }
+       .tile {
+    width: 70px;  /* reduced from 80px */
+    height: 87px; /* reduced from 100px */
+    background: linear-gradient(145deg, #e8d0b0, #b08968);
+    border: 3px solid #c49a6c;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+    position: absolute;
+    overflow: hidden;
+    padding: 5px;
+}
         
         .tile:hover {
             transform: scale(1.08) translateY(-3px);
@@ -284,20 +284,16 @@
             display: none;
         }
         
-        @media (max-width: 768px) {
-            .game-area {
-                grid-template-columns: 1fr;
-            }
-            
-            .tile {
-                width: 70px;
-                height: 90px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-        }
+     @media (max-width: 1200px) {
+    .tile {
+        width: 60px;
+        height: 75px;
+    }
+    
+    .board-container {
+        min-height: 550px;
+    }
+}
     </style>
 </head>
 <body>
