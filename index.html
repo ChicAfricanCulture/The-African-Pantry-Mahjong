@@ -661,17 +661,17 @@ function checkUnwinnable() {
         return;
     }
     
-    const matches = findAvailableMatches();
-    if (matches.length === 0 && activeTiles.length > 0) {
-        setTimeout(() => {
-            if (gameState.shufflesRemaining > 0) {
-                showProverbMessage("No matches available. Stirring the pot...");
-                shuffleTiles(false);
-            } else {
-                showProverbMessage("Out of shuffles! Try a new game.");
-            }
-        }, 500);
-    }
+if (matches.length === 0 && activeTiles.length > 0) {
+    setTimeout(() => {
+        if (gameState.shufflesRemaining > 0) {
+            showProverbMessage("No matches available. Stirring the pot...");
+            shuffleTiles(false);
+        } else {
+            // Auto-shuffle anyway when out of shuffles, but don't decrement
+            showProverbMessage("No matches - forced shuffle!");
+            shuffleTiles(true); // 'true' means forced shuffle (doesn't use a shuffle count)
+        }
+    }, 500);
 }
 
 // Find available matches among FREE tiles only
