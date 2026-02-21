@@ -725,7 +725,8 @@ function computeGeometry(){
   const liftX = Math.round(tileW * 0.14);
   const liftY = Math.round(tileH * 0.10);
 
-  let minX=1e9, minY=1e9, maxX=0, maxY=0;
+  let minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+
   for(const p of state.layout){
     const x = pad + p.gx*stepX + (p.l-1)*liftX;
     const y = pad + p.gy*stepY - (p.l-1)*liftY;
@@ -733,8 +734,17 @@ function computeGeometry(){
     maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
   }
 
-  state.geom = { tileW, tileH, stepX, stepY, pad, liftX, liftY, minX, minY };
-  dom.board.style.height = `${Math.ceil((maxY-minY)+tileH+pad*2)}px`;
+  // Content bounds for centering inside the board width
+  const contentW = (maxX - minX) + tileW + pad * 2;
+  const contentH = (maxY - minY) + tileH + pad * 2;
+
+  state.geom = {
+    tileW, tileH, stepX, stepY, pad, liftX, liftY,
+    minX, minY,
+    contentW, contentH
+  };
+
+  dom.board.style.height = `${Math.ceil(contentH)}px`;
 }
 
 function updateFree(){
@@ -770,7 +780,11 @@ function render(){
   computeGeometry();
   dom.board.innerHTML = '';
 
-  const { tileW, tileH, stepX, stepY, pad, liftX, liftY, minX, minY } = state.geom;
+  const { tileW, tileH, stepX, stepY, pad, liftX, liftY, minX, minY, contentW } = state.geom;
+
+  // Center the cluster if the board is wider than the content
+  const boardW = dom.board.clientWidth || dom.board.parentElement.clientWidth || 600;
+  const centerOffsetX = Math.max(0, Math.floor((boardW - contentW) / 2));
 
   const sorted = [...state.tiles].sort((a,b)=>{
     if(a.pos.l !== b.pos.l) return a.pos.l - b.pos.l;
@@ -785,20 +799,19 @@ function render(){
     el.className = 'tile';
     el.dataset.id = String(t.id);
 
-    // Accessibility: treat tile as button
+    // keep your accessibility attributes exactly as you had them
     el.setAttribute('role', 'button');
     el.setAttribute('aria-label', ariaLabelForTile(t));
     el.setAttribute('aria-disabled', String(!t.free));
     el.setAttribute('aria-pressed', String(!!t.selected));
 
-    // Roving tabindex: only the focused tile is tabbable
     const isFocused = state.focusedTileId === t.id;
     el.tabIndex = isFocused ? 0 : -1;
 
     if(t.selected) el.classList.add('selected');
     if(!t.free) el.classList.add('blocked');
 
-    const x = pad + t.pos.gx*stepX + (t.pos.l-1)*liftX - minX + pad;
+    const x = centerOffsetX + (pad + t.pos.gx*stepX + (t.pos.l-1)*liftX - minX + pad);
     const y = pad + t.pos.gy*stepY - (t.pos.l-1)*liftY - minY + pad;
 
     t.screenX = x + tileW/2;
@@ -820,7 +833,6 @@ function render(){
     el.appendChild(img);
 
     el.addEventListener('click', () => {
-      // user gesture can unlock audio
       if(state.soundEnabled) ensureAudio();
       soundClick();
       selectTile(t.id);
@@ -828,7 +840,6 @@ function render(){
 
     el.addEventListener('focus', () => {
       state.focusedTileId = t.id;
-      // keep aria/visual focus stable without re-render
       updateRovingTabIndex();
     });
 
@@ -836,10 +847,11 @@ function render(){
   }
 
   updateButtons();
+}
 
   // After render, focus the currently focused tile if it exists and the user is navigating by keyboard
   // (We won't forcibly focus on every render to avoid stealing focus.)
-}
+
 
 function updateRovingTabIndex(){
   const tiles = dom.board.querySelectorAll('.tile');
