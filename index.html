@@ -352,9 +352,8 @@
         <button id="next-level-btn">Next Level</button>
         <button id="play-again-btn">Play Again</button>
     </div>
-
  <script>
-// African food proverbs
+     // African food proverbs
 const proverbs = [
     "The one who eats alone cannot discuss the taste of the food with others.",
     "The firewood that cooks the food is the same one that burns the cook.",
@@ -410,7 +409,7 @@ let gameState = {
     timerInterval: null,
     elapsedTime: 0,
     level: 1,
-    totalTiles: 88,
+    totalTiles: 40,
     lastMoveTime: null,
     stuckTimer: null,
     proverbShown: false
@@ -447,53 +446,56 @@ function initGame() {
 // Create tiles with stacking based on level
 function createTiles() {
     gameState.tiles = [];
-    const tilesPerSymbol = 4 + Math.floor(gameState.level / 2);
-    gameState.totalTiles = tilesPerSymbol * foodSymbols.length;
+    
+    // YOU CAN CHANGE THIS NUMBER to adjust board size:
+    // 25 = 5x5, 32 = 8x4, 40 = 8x5, 48 = 8x6, 56 = 8x7
+    const tilesPerLevel = 40;
+    const totalTilesNeeded = tilesPerLevel;
+    
+    // Calculate how many of each symbol we need
+    const symbolCount = foodSymbols.length;
+    const baseCount = Math.floor(totalTilesNeeded / symbolCount);
+    const remainder = totalTilesNeeded % symbolCount;
     
     const symbols = [];
-    for (let i = 0; i < tilesPerSymbol; i++) {
-        symbols.push(...foodSymbols);
+    
+    // Add base copies of each symbol
+    for (let i = 0; i < symbolCount; i++) {
+        for (let j = 0; j < baseCount; j++) {
+            symbols.push(foodSymbols[i]);
+        }
     }
     
+    // Add extra symbols for remainder
+    for (let i = 0; i < remainder; i++) {
+        symbols.push(foodSymbols[i]);
+    }
+    
+    // Shuffle the symbols
     for (let i = symbols.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [symbols[i], symbols[j]] = [symbols[j], symbols[i]];
     }
     
-  // Generate positions for tiles in complete rows
-function generateStackedPositions(totalTiles, level) {
-    const positions = [];
-    const columns = 8; // Fixed 8 columns
-    const rows = Math.ceil(totalTiles / columns); // Calculate rows needed (will always be whole number)
+    const positions = generateStackedPositions(totalTilesNeeded, gameState.level);
     
-    // Calculate how many tiles per level of stacking
-    const maxLevels = Math.min(level + 1, 4);
-    const tilesPerLevel = Math.ceil(totalTiles / maxLevels);
-    
-    let tileIndex = 0;
-    
-    for (let level = 0; level < maxLevels; level++) {
-        const levelTiles = (level === maxLevels - 1) ? 
-            totalTiles - (tilesPerLevel * (maxLevels - 1)) : tilesPerLevel;
-        
-        for (let i = 0; i < levelTiles; i++) {
-            const row = Math.floor(tileIndex / columns);
-            const col = tileIndex % columns;
-            
-            positions.push({
-                x: col * 85 + (level * 4),
-                y: row * 105 + (level * 6),
-                level: level + 1
-            });
-            
-            tileIndex++;
-        }
+    for (let i = 0; i < totalTilesNeeded; i++) {
+        gameState.tiles.push({
+            id: i,
+            symbol: symbols[i],
+            matched: false,
+            selected: false,
+            correctMatch: false,
+            x: positions[i].x,
+            y: positions[i].y,
+            level: positions[i].level,
+            free: false
+        });
     }
     
-    return positions;
-}
     updateFreeTiles();
     
+    // Ensure game is winnable
     let attempts = 0;
     while (findAvailableMatches().length === 0 && attempts < 10) {
         const unmatchedTiles = gameState.tiles.filter(t => !t.matched);
@@ -509,28 +511,36 @@ function generateStackedPositions(totalTiles, level) {
     }
     
     gameState.matches = 0;
-    gameState.remaining = gameState.totalTiles;
+    gameState.remaining = totalTilesNeeded;
+    gameState.totalTiles = totalTilesNeeded;
 }
 
-// Generate stacked positions for tiles
+// Generate positions with COMPLETE ROWS only
 function generateStackedPositions(totalTiles, level) {
     const positions = [];
+    const columns = 8;
+    const rows = Math.ceil(totalTiles / columns); // This ensures complete rows
+    
     const maxLevels = Math.min(level + 1, 4);
     const tilesPerLevel = Math.ceil(totalTiles / maxLevels);
     
-    for (let level = 0; level < maxLevels; level++) {
-        const levelTiles = (level === maxLevels - 1) ? 
+    let tileIndex = 0;
+    
+    for (let levelIndex = 0; levelIndex < maxLevels; levelIndex++) {
+        const levelTiles = (levelIndex === maxLevels - 1) ? 
             totalTiles - (tilesPerLevel * (maxLevels - 1)) : tilesPerLevel;
         
         for (let i = 0; i < levelTiles; i++) {
-            const row = Math.floor(i / 8);
-            const col = i % 8;
+            const row = Math.floor(tileIndex / columns);
+            const col = tileIndex % columns;
             
             positions.push({
-                x: col * 85 + (level * 4),
-                y: row * 105 + (level * 6),
-                level: level + 1
+                x: col * 85 + (levelIndex * 4),
+                y: row * 105 + (levelIndex * 6),
+                level: levelIndex + 1
             });
+            
+            tileIndex++;
         }
     }
     
@@ -558,14 +568,15 @@ function updateFreeTiles() {
         }
     });
     
-    // NEW: Auto-shuffle when game becomes unwinnable
+    // Auto-shuffle when game becomes unwinnable
     checkAndFixUnwinnable();
-}// NEW FUNCTION: Check for unwinnable state and auto-shuffle
+}
+
+// Check for unwinnable state and auto-shuffle
 function checkAndFixUnwinnable() {
     const activeTiles = gameState.tiles.filter(t => !t.matched);
     const freeTiles = activeTiles.filter(t => t.free);
     
-    // If less than 2 free tiles, game is stuck
     if (freeTiles.length < 2) {
         setTimeout(() => {
             showProverbMessage("The pot needs stirring... Auto-shuffling!");
@@ -574,7 +585,6 @@ function checkAndFixUnwinnable() {
         return;
     }
     
-    // Check if any matches exist among free tiles
     const matches = findAvailableMatches();
     if (matches.length === 0 && activeTiles.length > 0) {
         setTimeout(() => {
@@ -582,6 +592,21 @@ function checkAndFixUnwinnable() {
             shuffleTiles();
         }, 500);
     }
+}
+
+// Find available matches among FREE tiles only
+function findAvailableMatches() {
+    const matches = [];
+    const freeTiles = gameState.tiles.filter(tile => !tile.matched && tile.free);
+    
+    for (let i = 0; i < freeTiles.length; i++) {
+        for (let j = i + 1; j < freeTiles.length; j++) {
+            if (freeTiles[i].symbol.id === freeTiles[j].symbol.id) {
+                matches.push([freeTiles[i], freeTiles[j]]);
+            }
+        }
+    }
+    return matches;
 }
 
 // Render the game board with stacked tiles
@@ -644,13 +669,10 @@ function selectTile(tile) {
             
             if (gameState.remaining === 0) {
                 endLevel();
-            } else {
-                if (findAvailableMatches().length === 0) {
-                    showLossProverb();
-                }
             }
         } else {
             gameState.selectedTile.selected = false;
+            renderBoard();
         }
         
         gameState.selectedTile = null;
@@ -738,21 +760,6 @@ function provideHint() {
     }
 }
 
-// Replace the existing findAvailableMatches with this version
-function findAvailableMatches() {
-    const matches = [];
-    const freeTiles = gameState.tiles.filter(tile => !tile.matched && tile.free);
-    
-    for (let i = 0; i < freeTiles.length; i++) {
-        for (let j = i + 1; j < freeTiles.length; j++) {
-            if (freeTiles[i].symbol.id === freeTiles[j].symbol.id) {
-                matches.push([freeTiles[i], freeTiles[j]]);
-            }
-        }
-    }
-    return matches;
-}
-
 // Flash tiles for hint
 function flashTiles(tiles) {
     tiles.forEach(tile => {
@@ -791,6 +798,7 @@ function shuffleTiles() {
     
     gameState.tiles = [...unmatchedTiles, ...matchedTiles];
     renderBoard();
+    updateFreeTiles();
 }
 
 // Reset game to level 1
@@ -827,7 +835,6 @@ nextLevelButton.addEventListener('click', nextLevel);
 playAgainButton.addEventListener('click', resetGame);
 
 // Initialize when page loads
-window.addEventListener('DOMContentLoaded', initGame);
-</script>
+window.addEventListener('DOMContentLoaded', initGame);</script>
 </body>
 </html>
