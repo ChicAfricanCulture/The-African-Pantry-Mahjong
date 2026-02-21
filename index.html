@@ -1,540 +1,458 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The African Pantry Mahjong</title>
-    <meta property="og:title" content="The African Pantry Mahjong">
-    <meta property="og:description" content="Match ingredients, discover recipes, and explore African foodways.">
-    <meta property="og:url" content="https://chicafricanculture.github.io/The-African-Pantry-Mahjong/">
-    <meta property="og:type" content="website">
-    
-    <style>
-        body {
-            background: linear-gradient(135deg, #1a2a3a, #0d1b2a);
-            color: #e0e0e0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-        }
-        
-        .container {
-            max-width: 1200px;
-            width: 100%;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 40px 20px;
-            background: linear-gradient(rgba(13, 27, 42, 0.9), rgba(13, 27, 42, 0.9));
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            color: #f9a826;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        
-        .subtitle {
-            font-size: 1.1rem;
-            color: #b8c7d6;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .archive-link {
-            text-align: center;
-            margin: 0.5rem 0 1.5rem;
-            font-size: 1rem;
-            color: #b8c7d6;
-        }
-        
-        .archive-link a {
-            color: #f9a826;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        
-        .archive-link a:hover {
-            text-decoration: underline;
-        }
-        
-        .game-area {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .board-container {
-            background: rgba(13, 27, 42, 0.8);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            min-height: 600px;
-            position: relative;
-        }
-        
-        .info-panel {
-            background: rgba(13, 27, 42, 0.8);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            background: rgba(26, 42, 58, 0.6);
-            padding: 15px;
-            border-radius: 10px;
-        }
-        
-        .stat {
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #f9a826;
-        }
-        
-        .stat-label {
-            font-size: 0.8rem;
-            color: #b8c7d6;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .symbol-info {
-            background: rgba(26, 42, 58, 0.6);
-            padding: 15px;
-            border-radius: 10px;
-            min-height: 100px;
-        }
-        
-        .symbol-name {
-            font-size: 1.3rem;
-            color: #f9a826;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        
-        .symbol-meaning {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #b8c7d6;
-        }
-        
-        .controls {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        button {
-            background: linear-gradient(135deg, #f9a826, #e8951e);
-            color: #1a2a3a;
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(249, 168, 38, 0.4);
-        }
-        
-        button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            filter: grayscale(0.5);
-        }
-        
-        .mahjong-board {
-            display: block;
-            position: relative;
-            min-height: 550px;
-            width: 100%;
-        }
-        
-        .tile {
-            width: 70px;
-            height: 87px;
-            background: linear-gradient(145deg, #e8d0b0, #b08968);
-            border: 3px solid #c49a6c;
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.5);
-            position: absolute;
-            overflow: hidden;
-            padding: 5px;
-        }
-        
-        .tile:hover:not(.blocked):not(.matched) {
-            transform: scale(1.05) translateY(-3px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.6);
-            z-index: 100;
-            border-color: #f9a826;
-        }
-        
-        .tile.selected {
-            transform: translateY(-8px);
-            box-shadow: 0 0 25px #f9a826, 0 8px 16px rgba(0,0,0,0.5);
-            border-color: #f9a826;
-            z-index: 200;
-        }
-        
-        .tile.matched {
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-        }
-        
-        .tile.blocked {
-            filter: grayscale(0.8) brightness(0.7);
-            cursor: not-allowed !important;
-            pointer-events: none;
-            opacity: 1;
-        }
-        
-        .tile.wrong-match {
-            animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-            border-color: #ff4444 !important;
-        }
-        
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-2px, 0, 0); }
-            20%, 80% { transform: translate3d(4px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
-            40%, 60% { transform: translate3d(8px, 0, 0); }
-        }
-        
-        .tile img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
-        
-        .tile.level-1 { z-index: 5; }
-        .tile.level-2 { z-index: 15; }
-        .tile.level-3 { z-index: 25; }
-        .tile.level-4 { z-index: 35; }
-        
-        .proverb-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(249, 168, 38, 0.98);
-            color: #1a2a3a;
-            padding: 25px 35px;
-            border-radius: 15px;
-            text-align: center;
-            font-size: 1.3rem;
-            font-weight: bold;
-            z-index: 2000;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            max-width: 450px;
-            animation: floatIn 0.5s ease-out;
-            border: 2px solid #fff3e0;
-        }
-        
-        @keyframes floatIn {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -60%);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
-        }
-        
-        .level-indicator {
-            background: rgba(26, 42, 58, 0.6);
-            padding: 12px 18px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 20px;
-            border: 1px solid rgba(249, 168, 38, 0.3);
-        }
-        
-        .level-text {
-            font-size: 1.2rem;
-            color: #f9a826;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-        }
-        
-        .win-message {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(13, 27, 42, 0.98);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            text-align: center;
-            padding: 20px;
-            backdrop-filter: blur(5px);
-        }
-        
-        .win-message h2 {
-            font-size: 3rem;
-            color: #f9a826;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(249, 168, 38, 0.3);
-        }
-        
-        .win-message p {
-            font-size: 1.3rem;
-            margin-bottom: 30px;
-            color: #e0e0e0;
-            max-width: 600px;
-        }
-        
-        .win-message button {
-            margin: 10px;
-            min-width: 200px;
-            font-size: 1.1rem;
-            padding: 15px 30px;
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        .shuffle-warning {
-            color: #ff6b6b;
-            font-size: 0.9rem;
-            text-align: center;
-            margin-top: 5px;
-            font-weight: bold;
-        }
-        
-        @media (max-width: 1200px) {
-            .tile {
-                width: 60px;
-                height: 75px;
-            }
-            
-            .board-container {
-                min-height: 550px;
-                padding: 15px;
-            }
-            
-            .game-area {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .tile {
-                width: 50px;
-                height: 63px;
-            }
-            
-            .stat-value {
-                font-size: 1.2rem;
-            }
-        }
-        
-        footer {
-            margin-top: 40px;
-            text-align: center;
-            color: #6a7a8a;
-            font-size: 0.9rem;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The African Pantry Mahjong</title>
+
+  <meta property="og:title" content="The African Pantry Mahjong" />
+  <meta property="og:description" content="Match ingredients, discover recipes, and explore African foodways." />
+  <meta property="og:url" content="https://chicafricanculture.github.io/The-African-Pantry-Mahjong/" />
+  <meta property="og:type" content="website" />
+
+  <style>
+    :root{
+      --bg1:#1a2a3a;
+      --bg2:#0d1b2a;
+      --panel:#0d1b2a;
+      --panel2:#1a2a3a;
+      --accent:#f9a826;
+      --muted:#b8c7d6;
+      --text:#e0e0e0;
+
+      /* Tiles must NOT be transparent */
+      --tileA:#e8d0b0;
+      --tileB:#b08968;
+      --tileBorder:#c49a6c;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--text);
+      min-height: 100vh;
+      margin:0;
+      padding:20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    .container{ width:100%; max-width:1200px; }
+
+    header{
+      text-align:center;
+      margin-bottom:18px;
+      padding:36px 20px;
+      background: var(--panel);
+      border-radius:15px;
+      box-shadow:0 8px 32px rgba(0,0,0,0.35);
+      border:1px solid rgba(255,255,255,0.10);
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:2.35rem;
+      color:var(--accent);
+      text-shadow:2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .subtitle{
+      margin:0 auto;
+      max-width:760px;
+      color:var(--muted);
+      font-size:1.05rem;
+      line-height:1.5;
+    }
+
+    .archive-link{
+      text-align:center;
+      margin:0.5rem 0 1.25rem;
+      color:var(--muted);
+    }
+    .archive-link a{
+      color:var(--accent);
+      text-decoration:none;
+      font-weight:bold;
+    }
+    .archive-link a:hover{ text-decoration:underline; }
+
+    .game-area{
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap:18px;
+      align-items:start;
+    }
+
+    .board-container,.info-panel{
+      background: rgba(13, 27, 42, 0.92);
+      border-radius:15px;
+      padding:18px;
+      box-shadow:0 8px 32px rgba(0,0,0,0.35);
+      border:1px solid rgba(255,255,255,0.10);
+      overflow:hidden; /* nothing outside containers */
+    }
+
+    .level-indicator{
+      background: rgba(26, 42, 58, 0.80);
+      border:1px solid rgba(249,168,38,0.30);
+      border-radius:10px;
+      padding:12px 14px;
+      text-align:center;
+      margin-bottom:14px;
+    }
+    .level-text{
+      color:var(--accent);
+      font-weight:bold;
+      letter-spacing:0.4px;
+    }
+
+    /* The board is a RELATIVE container for absolutely positioned stacked tiles */
+    .mahjong-board{
+      position:relative;
+      width:100%;
+      margin:0 auto;
+      border-radius:12px;
+      background: rgba(26,42,58,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow:hidden; /* strict containment */
+    }
+
+    .tile{
+      position:absolute;
+      background: linear-gradient(145deg, var(--tileA), var(--tileB));
+      border:3px solid var(--tileBorder);
+      border-radius:12px;
+      box-shadow:0 6px 14px rgba(0,0,0,0.55);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      cursor:pointer;
+      user-select:none;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+      padding:6px;
+      overflow:hidden;
+    }
+    .tile:hover:not(.blocked){
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow:0 10px 18px rgba(0,0,0,0.65);
+    }
+    .tile.selected{
+      transform: translateY(-6px);
+      border-color: var(--accent);
+      box-shadow:0 0 18px rgba(249,168,38,0.55), 0 12px 22px rgba(0,0,0,0.65);
+    }
+
+    /* No transparency: blocked stays opaque */
+    .tile.blocked{
+      filter: grayscale(0.9) brightness(0.72);
+      cursor:not-allowed;
+    }
+
+    /* No transparency: matched tile is removed entirely */
+    .tile.matched{
+      display:none !important;
+    }
+
+    .tile img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+    }
+
+    .tile.wrong-match{
+      animation: shake 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      border-color:#ff4444 !important;
+    }
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-2px, 0, 0); }
+      20%, 80% { transform: translate3d(4px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+      40%, 60% { transform: translate3d(8px, 0, 0); }
+    }
+
+    .info-panel{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns: repeat(4,1fr);
+      gap:10px;
+      background: rgba(26,42,58,0.80);
+      padding:14px;
+      border-radius:10px;
+    }
+    .stat{ text-align:center; }
+    .stat-value{ color:var(--accent); font-weight:bold; font-size:1.35rem; }
+    .stat-label{ color:var(--muted); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.5px; }
+
+    .symbol-info{
+      background: rgba(26,42,58,0.80);
+      padding:14px;
+      border-radius:10px;
+      min-height:120px;
+    }
+    .symbol-name{ color:var(--accent); font-weight:bold; font-size:1.25rem; margin-bottom:8px; }
+    .symbol-meaning{ color:var(--muted); line-height:1.5; }
+
+    .controls{ display:flex; flex-direction:column; gap:10px; }
+    button{
+      background: linear-gradient(135deg, var(--accent), #e8951e);
+      color:#1a2a3a;
+      border:none;
+      padding:14px;
+      border-radius:8px;
+      font-weight:bold;
+      cursor:pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+    button:hover:not(:disabled){
+      transform: translateY(-2px);
+      box-shadow:0 4px 12px rgba(249,168,38,0.40);
+    }
+    button:disabled{ opacity:0.45; cursor:not-allowed; }
+
+    .shuffle-warning{
+      color:#ff6b6b;
+      font-size:0.9rem;
+      text-align:center;
+      font-weight:bold;
+      min-height:1.1em;
+      margin-top:-6px;
+    }
+
+    .proverb-message{
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform: translate(-50%,-50%);
+      background:#f9a826;
+      color:#1a2a3a;
+      padding:22px 28px;
+      border-radius:15px;
+      text-align:center;
+      font-size:1.2rem;
+      font-weight:bold;
+      z-index:2000;
+      box-shadow:0 10px 40px rgba(0,0,0,0.55);
+      max-width:520px;
+      border:2px solid #fff3e0;
+      animation: floatIn 0.35s ease-out;
+    }
+    @keyframes floatIn{
+      from{ opacity:0; transform: translate(-50%,-58%); }
+      to{ opacity:1; transform: translate(-50%,-50%); }
+    }
+
+    .win-message{
+      position:fixed;
+      inset:0;
+      background: rgba(13,27,42,0.98);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      z-index:2000;
+      padding:20px;
+    }
+    .win-message h2{
+      font-size:2.6rem;
+      color:var(--accent);
+      margin:0 0 14px;
+      text-shadow:0 0 18px rgba(249,168,38,0.30);
+    }
+    .win-message p{
+      font-size:1.2rem;
+      max-width:720px;
+      color:var(--text);
+      margin:0 0 22px;
+      line-height:1.5;
+    }
+    .win-message button{
+      margin:8px;
+      min-width:200px;
+      font-size:1.05rem;
+      padding:14px 26px;
+    }
+    .hidden{ display:none !important; }
+
+    footer{
+      margin-top:28px;
+      text-align:center;
+      color:#6a7a8a;
+      font-size:0.9rem;
+    }
+
+    @media (max-width:1100px){
+      .game-area{ grid-template-columns:1fr; }
+    }
+    @media (max-width:560px){
+      .stats{ grid-template-columns: repeat(2,1fr); }
+      h1{ font-size:2rem; }
+    }
+  </style>
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <h1>The African Pantry Mahjong</h1>
-            <p class="subtitle">Match ingredients, discover recipes, and explore the rich foodways of the African continent.</p>
-        </header>
-        
-        <p class="archive-link">
-            Part of the <strong>African Foodways Archive</strong> · 
-            <a href="https://chicafricanculture.github.io/african-foodways-data/">Explore the Collection</a>
-        </p>
-        
-        <div class="game-area">
-            <div class="board-container">
-                <div class="level-indicator">
-                    <span class="level-text">Level <span id="level">1</span> · <span id="total-tiles">64</span> Ingredients</span>
-                </div>
-                <div class="mahjong-board" id="board"></div>
-            </div>
-            
-            <div class="info-panel">
-                <div class="stats">
-                    <div class="stat">
-                        <div class="stat-value" id="matches">0</div>
-                        <div class="stat-label">Matches</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="remaining">64</div>
-                        <div class="stat-label">Remaining</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="time">00:00</div>
-                        <div class="stat-label">Time</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="shuffle-count">3</div>
-                        <div class="stat-label">Shuffles</div>
-                    </div>
-                </div>
-                
-                <div class="symbol-info">
-                    <div class="symbol-name" id="symbol-name">Select a tile</div>
-                    <div class="symbol-meaning" id="symbol-meaning">Click any ingredient to learn about its place in African cooking</div>
-                </div>
-                
-                <div class="controls">
-                    <button id="hint-btn" title="Highlight a matching pair">🔍 Find Match</button>
-                    <button id="shuffle-btn" title="Rearrange ingredients (3 per game)">🔄 Shuffle</button>
-                    <button id="reset-btn" title="Start a new game">🆕 New Game</button>
-                </div>
-                <div class="shuffle-warning" id="shuffle-warning"></div>
-            </div>
+  <div class="container">
+    <header>
+      <h1>The African Pantry Mahjong</h1>
+      <p class="subtitle">Match ingredients, discover recipes, and explore the rich foodways of the African continent.</p>
+    </header>
+
+    <p class="archive-link">
+      Part of the <strong>African Foodways Archive</strong> ·
+      <a href="https://chicafricanculture.github.io/african-foodways-data/">Explore the Collection</a>
+    </p>
+
+    <div class="game-area">
+      <div class="board-container">
+        <div class="level-indicator">
+          <span class="level-text">Level <span id="level">1</span> · <span id="total-tiles">64</span> Ingredients</span>
         </div>
-        
-        <footer>
-            <p>African Foodways Archive · Preserving culinary heritage through play</p>
-        </footer>
-    </div>
-    
-    <div class="win-message hidden" id="win-message">
-        <h2>🏆 Pantry Mastered! 🏆</h2>
-        <p id="win-text">You've matched all the ingredients!</p>
-        <button id="next-level-btn">⬆️ Next Level</button>
-        <button id="play-again-btn">🔄 Play Again</button>
+        <div class="mahjong-board" id="board" aria-label="Mahjong board"></div>
+      </div>
+
+      <div class="info-panel">
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-value" id="matches">0</div>
+            <div class="stat-label">Matches</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="remaining">64</div>
+            <div class="stat-label">Remaining</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="time">00:00</div>
+            <div class="stat-label">Time</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="shuffle-count">3</div>
+            <div class="stat-label">Shuffles</div>
+          </div>
+        </div>
+
+        <div class="symbol-info">
+          <div class="symbol-name" id="symbol-name">Select a tile</div>
+          <div class="symbol-meaning" id="symbol-meaning">Click any ingredient to learn about its place in African cooking</div>
+        </div>
+
+        <div class="controls">
+          <button id="hint-btn" title="Highlight a matching pair">🔍 Find Match</button>
+          <button id="shuffle-btn" title="Rearrange ingredients (3 per game)">🔄 Shuffle</button>
+          <button id="reset-btn" title="Start a new game">🆕 New Game</button>
+        </div>
+        <div class="shuffle-warning" id="shuffle-warning"></div>
+      </div>
     </div>
 
+    <footer>
+      <p>African Foodways Archive · Preserving culinary heritage through play</p>
+    </footer>
+  </div>
+
+  <div class="win-message hidden" id="win-message" role="dialog" aria-modal="true" aria-label="Win message">
+    <h2>🏆 Pantry Mastered! 🏆</h2>
+    <p id="win-text">You've matched all the ingredients!</p>
+    <button id="next-level-btn">⬆️ Next Level</button>
+    <button id="play-again-btn">🔄 Play Again</button>
+  </div>
+
 <script>
-// ==================== PROVERBS ====================
+/** ==================== PROVERBS ==================== */
 const proverbs = [
-    "The one who eats alone cannot discuss the taste of the food with others.",
-    "The firewood that cooks the food is the same one that burns the cook.",
-    "Soup that is too hot makes one wait before eating.",
-    "A full belly is the mother of all songs.",
-    "You cannot taste honey without burning your tongue.",
-    "If you want to eat a lot of food, don't wash your hands too clean.",
-    "One cannot prepare soup without water.",
-    "However long the night, the dawn will break.",
-    "A single bracelet does not jingle.",
-    "By the time the fool has learned the game, the players have dispersed.",
-    "Patience can cook a stone.",
-    "The best palm oil is squeezed by the thumb.",
-    "However full the river, it still wants to grow."
+  "The one who eats alone cannot discuss the taste of the food with others.",
+  "The firewood that cooks the food is the same one that burns the cook.",
+  "Soup that is too hot makes one wait before eating.",
+  "A full belly is the mother of all songs.",
+  "You cannot taste honey without burning your tongue.",
+  "If you want to eat a lot of food, don't wash your hands too clean.",
+  "One cannot prepare soup without water.",
+  "However long the night, the dawn will break.",
+  "A single bracelet does not jingle.",
+  "By the time the fool has learned the game, the players have dispersed.",
+  "Patience can cook a stone.",
+  "The best palm oil is squeezed by the thumb.",
+  "However full the river, it still wants to grow."
 ];
 
 const lossProverbs = [
-    "The pot that boils too much loses its flavor.",
-    "Even the best cook sometimes burns the stew.",
-    "A bad cook blames his pots and pestle.",
-    "When the cooking pot is empty, the fire feels ashamed.",
-    "A fall is not a failure, but a failure to rise is.",
-    "The elephant does not get tired of its trunk.",
-    "The best fisherman sometimes comes home empty-handed."
+  "The pot that boils too much loses its flavor.",
+  "Even the best cook sometimes burns the stew.",
+  "A bad cook blames his pots and pestle.",
+  "When the cooking pot is empty, the fire feels ashamed.",
+  "A fall is not a failure, but a failure to rise is.",
+  "The elephant does not get tired of its trunk.",
+  "The best fisherman sometimes comes home empty-handed."
 ];
 
-// ==================== FOOD SYMBOLS (32 ingredients, all with your PNG files) ====================
+/** ==================== FOOD SYMBOLS ==================== */
 const foodSymbols = [
-    { id: 1, name: "Baobab", meaning: "Baobab fruit - vitamin-rich powder for drinks, sauces, and porridges. The 'tree of life' provides food and medicine.", imageFile: "baobab.png" },
-    { id: 2, name: "Bee", meaning: "Honey - natural sweetener in traditional cooking, used in teas, baked goods, and as a preservative. Symbolizes community and industry.", imageFile: "bee.png" },
-    { id: 3, name: "Beer", meaning: "Traditional sorghum and millet beers - ceremonial and social drinks, often thicker than western beers and rich in B vitamins.", imageFile: "beer.png" },
-    { id: 4, name: "Chef's Hands", meaning: "The skilled hands that prepare our meals - knowledge passed down through generations. Cooking is an art taught by mothers and grandmothers.", imageFile: "chef-hands.png" },
-    { id: 5, name: "Cooking Spoon", meaning: "The wooden spoon that stirs communities together. Often carved from a single piece of wood and seasoned with decades of use.", imageFile: "cooking-spoon.png" },
-    { id: 6, name: "Corn", meaning: "Maize - kenkey, ugali, sadza, and porridges. A staple grain introduced to Africa and now central to many cuisines.", imageFile: "corn.png" },
-    { id: 7, name: "Cow", meaning: "Suya, rich stews, and traditional ceremonies. Cattle represent wealth and are often only slaughtered for special occasions.", imageFile: "cow.png" },
-    { id: 8, name: "Crab", meaning: "Coastal soups and crab pepper soup. Fresh seafood is central to West and East African coastal cuisine.", imageFile: "crab.png" },
-    { id: 9, name: "Egg", meaning: "Ghanaian egg stew, boiled eggs in puff-puff, and ceremonial dishes. Eggs symbolize fertility and new beginnings.", imageFile: "egg.png" },
-    { id: 10, name: "Egusi", meaning: "Melon seeds - thickener for soups and stews. Ground egusi gives body and rich flavor to dishes across West Africa.", imageFile: "Egusi.png" },
-    { id: 11, name: "Fire", meaning: "Traditional cooking methods and hearths. The three-stone fire is the original kitchen, gathering families for generations.", imageFile: "fire.png" },
-    { id: 12, name: "Fish", meaning: "Grilled tilapia, fish pepper soups, dried and smoked fish. Preserving fish by smoking or drying is an ancient technique.", imageFile: "fish.png" },
-    { id: 13, name: "Fishing", meaning: "River and coastal communities. Fishing villages have unique culinary traditions based on daily catches.", imageFile: "fishing.png" },
-    { id: 14, name: "Fufu", meaning: "Pounded cassava and plantain - West Africa's signature swallow food. Made by pounding boiled cassava and plantain until smooth and elastic.", imageFile: "fufu.png" },
-    { id: 15, name: "Goat", meaning: "Goat pepper soup, ceremonial dishes. Goat meat is lean and flavorful, often reserved for special guests and celebrations.", imageFile: "goat.png" },
-    { id: 16, name: "Grain", meaning: "Millet, sorghum, teff - ancient grains. These drought-resistant grains have nourished Africans for thousands of years.", imageFile: "grain.png" },
-    { id: 17, name: "Hibiscus", meaning: "Zobo drink, sorrel - refreshing beverages. Dried hibiscus flowers make a tart, cranberry-like drink enjoyed across the continent.", imageFile: "hibiscus.png" },
-    { id: 18, name: "Maggi", meaning: "Essential seasoning in modern African cooking. These stock cubes add umami to stews and sauces, a ubiquitous kitchen staple.", imageFile: "maggi.png" },
-    { id: 19, name: "Mango", meaning: "Sweet tropical fruit - fresh, dried, or in chutneys. Mango season is celebrated, with dozens of local varieties.", imageFile: "Mango.png" },
-    { id: 20, name: "Mortar", meaning: "Pounding fufu, grinding spices. The mortar and pestle are the heartbeat of the kitchen, their rhythm signaling mealtime.", imageFile: "mortor.png" },
-    { id: 21, name: "Palm Oil", meaning: "Banga soup, essential for stews. The red oil gives dishes their characteristic color and rich flavor, pressed from palm fruit.", imageFile: "palm-oil.png" },
-    { id: 22, name: "Pepper", meaning: "Scotch bonnet, peri-peri, spice blends. African cuisine embraces heat, with peppers adding flavor and preserving food.", imageFile: "pepper.png" },
-    { id: 23, name: "Plantain", meaning: "Kelewele, dodo, fried plantains. Sweet or savory, green or ripe, plantains are endlessly versatile.", imageFile: "plantain.png" },
-    { id: 24, name: "Plate", meaning: "Communal dining and sharing meals. Food is meant to be shared - eating alone is almost unheard of in traditional culture.", imageFile: "plate.png" },
-    { id: 25, name: "Pot", meaning: "One-pot cooking, communal meals. The pot gathers ingredients and people alike, simmering stories with stews.", imageFile: "pot.png" },
-    { id: 26, name: "Rice", meaning: "Jollof, fried rice, coconut rice. The subject of friendly rivalries between nations, each claiming the best version.", imageFile: "rice.png" },
-    { id: 27, name: "Salt", meaning: "Preservation and flavor. Salt was once traded ounce for ounce with gold, essential for survival and taste.", imageFile: "salt.png" },
-    { id: 28, name: "Street Hawkers", meaning: "Mobile food vendors and street food culture. From roasted plantains to fried yam, street food feeds the rhythm of city life.", imageFile: "street-hawkers.png" },
-    { id: 29, name: "Vegetables", meaning: "Cassava leaves, bitterleaf, spinach. Wild and cultivated greens add minerals and depth to sauces.", imageFile: "vegetables.png" },
-    { id: 30, name: "Water", meaning: "The foundation of all cooking. No soup, no stew, no life without water. The first ingredient in every dish.", imageFile: "water.png" },
-    { id: 31, name: "Wood", meaning: "Fuel for traditional cooking fires. The choice of wood affects flavor, with different woods for smoking and slow-cooking.", imageFile: "wood.png" },
-    { id: 32, name: "Yam", meaning: "Yam pottage (asaro), boiled yam with sauces. Celebrated at New Yam festivals, symbolizing abundance and new beginnings.", imageFile: "yam.png" }
+  { id: 1, name: "Baobab", meaning: "Baobab fruit - vitamin-rich powder for drinks, sauces, and porridges. The 'tree of life' provides food and medicine.", imageFile: "baobab.png" },
+  { id: 2, name: "Bee", meaning: "Honey - natural sweetener in traditional cooking, used in teas, baked goods, and as a preservative. Symbolizes community and industry.", imageFile: "bee.png" },
+  { id: 3, name: "Beer", meaning: "Traditional sorghum and millet beers - ceremonial and social drinks, often thicker than western beers and rich in B vitamins.", imageFile: "beer.png" },
+  { id: 4, name: "Chef's Hands", meaning: "The skilled hands that prepare our meals - knowledge passed down through generations. Cooking is an art taught by mothers and grandmothers.", imageFile: "chef-hands.png" },
+  { id: 5, name: "Cooking Spoon", meaning: "The wooden spoon that stirs communities together. Often carved from a single piece of wood and seasoned with decades of use.", imageFile: "cooking-spoon.png" },
+  { id: 6, name: "Corn", meaning: "Maize - kenkey, ugali, sadza, and porridges. A staple grain introduced to Africa and now central to many cuisines.", imageFile: "corn.png" },
+  { id: 7, name: "Cow", meaning: "Suya, rich stews, and traditional ceremonies. Cattle represent wealth and are often only slaughtered for special occasions.", imageFile: "cow.png" },
+  { id: 8, name: "Crab", meaning: "Coastal soups and crab pepper soup. Fresh seafood is central to West and East African coastal cuisine.", imageFile: "crab.png" },
+  { id: 9, name: "Egg", meaning: "Ghanaian egg stew, boiled eggs in puff-puff, and ceremonial dishes. Eggs symbolize fertility and new beginnings.", imageFile: "egg.png" },
+  { id: 10, name: "Egusi", meaning: "Melon seeds - thickener for soups and stews. Ground egusi gives body and rich flavor to dishes across West Africa.", imageFile: "Egusi.png" },
+  { id: 11, name: "Fire", meaning: "Traditional cooking methods and hearths. The three-stone fire is the original kitchen, gathering families for generations.", imageFile: "fire.png" },
+  { id: 12, name: "Fish", meaning: "Grilled tilapia, fish pepper soups, dried and smoked fish. Preserving fish by smoking or drying is an ancient technique.", imageFile: "fish.png" },
+  { id: 13, name: "Fishing", meaning: "River and coastal communities. Fishing villages have unique culinary traditions based on daily catches.", imageFile: "fishing.png" },
+  { id: 14, name: "Fufu", meaning: "Pounded cassava and plantain - West Africa's signature swallow food. Made by pounding boiled cassava and plantain until smooth and elastic.", imageFile: "fufu.png" },
+  { id: 15, name: "Goat", meaning: "Goat pepper soup, ceremonial dishes. Goat meat is lean and flavorful, often reserved for special guests and celebrations.", imageFile: "goat.png" },
+  { id: 16, name: "Grain", meaning: "Millet, sorghum, teff - ancient grains. These drought-resistant grains have nourished Africans for thousands of years.", imageFile: "grain.png" },
+  { id: 17, name: "Hibiscus", meaning: "Zobo drink, sorrel - refreshing beverages. Dried hibiscus flowers make a tart, cranberry-like drink enjoyed across the continent.", imageFile: "hibiscus.png" },
+  { id: 18, name: "Maggi", meaning: "Essential seasoning in modern African cooking. These stock cubes add umami to stews and sauces, a ubiquitous kitchen staple.", imageFile: "maggi.png" },
+  { id: 19, name: "Mango", meaning: "Sweet tropical fruit - fresh, dried, or in chutneys. Mango season is celebrated, with dozens of local varieties.", imageFile: "Mango.png" },
+  { id: 20, name: "Mortar", meaning: "Pounding fufu, grinding spices. The mortar and pestle are the heartbeat of the kitchen, their rhythm signaling mealtime.", imageFile: "mortor.png" },
+  { id: 21, name: "Palm Oil", meaning: "Banga soup, essential for stews. The red oil gives dishes their characteristic color and rich flavor, pressed from palm fruit.", imageFile: "palm-oil.png" },
+  { id: 22, name: "Pepper", meaning: "Scotch bonnet, peri-peri, spice blends. African cuisine embraces heat, with peppers adding flavor and preserving food.", imageFile: "pepper.png" },
+  { id: 23, name: "Plantain", meaning: "Kelewele, dodo, fried plantains. Sweet or savory, green or ripe, plantains are endlessly versatile.", imageFile: "plantain.png" },
+  { id: 24, name: "Plate", meaning: "Communal dining and sharing meals. Food is meant to be shared - eating alone is almost unheard of in traditional culture.", imageFile: "plate.png" },
+  { id: 25, name: "Pot", meaning: "One-pot cooking, communal meals. The pot gathers ingredients and people alike, simmering stories with stews.", imageFile: "pot.png" },
+  { id: 26, name: "Rice", meaning: "Jollof, fried rice, coconut rice. The subject of friendly rivalries between nations, each claiming the best version.", imageFile: "rice.png" },
+  { id: 27, name: "Salt", meaning: "Preservation and flavor. Salt was once traded ounce for ounce with gold, essential for survival and taste.", imageFile: "salt.png" },
+  { id: 28, name: "Street Hawkers", meaning: "Mobile food vendors and street food culture. From roasted plantains to fried yam, street food feeds the rhythm of city life.", imageFile: "street-hawkers.png" },
+  { id: 29, name: "Vegetables", meaning: "Cassava leaves, bitterleaf, spinach. Wild and cultivated greens add minerals and depth to sauces.", imageFile: "vegetables.png" },
+  { id: 30, name: "Water", meaning: "The foundation of all cooking. No soup, no stew, no life without water. The first ingredient in every dish.", imageFile: "water.png" },
+  { id: 31, name: "Wood", meaning: "Fuel for traditional cooking fires. The choice of wood affects flavor, with different woods for smoking and slow-cooking.", imageFile: "wood.png" },
+  { id: 32, name: "Yam", meaning: "Yam pottage (asaro), boiled yam with sauces. Celebrated at New Yam festivals, symbolizing abundance and new beginnings.", imageFile: "yam.png" }
 ];
 
-// ==================== GAME STATE ====================
-let gameState = {
-    tiles: [],
-    selectedTile: null,
-    matches: 0,
-    remaining: 0,
-    startTime: null,
-    timerInterval: null,
-    elapsedTime: 0,
-    level: 1,
-    totalTiles: 64,
-    lastMoveTime: null,
-    stuckTimer: null,
-    proverbShown: false,
-    shufflesRemaining: 3
+/** ==================== GAME STATE ==================== */
+const gameState = {
+  tiles: [],
+  selectedId: null,
+  matches: 0,
+  remaining: 64,
+  level: 1,
+  totalTiles: 64,
+  startTime: null,
+  timerInterval: null,
+  elapsedTime: 0,
+  lastMoveTime: null,
+  stuckTimer: null,
+  proverbShown: false,
+  shufflesRemaining: 3,
+  layout: [],
+  geom: { tileW: 70, tileH: 87, stepX: 55, stepY: 68, pad: 14, liftX: 10, liftY: 10, boardW: 600, boardH: 500 }
 };
 
-// ==================== DOM ELEMENTS ====================
+/** ==================== DOM ELEMENTS ==================== */
 const boardElement = document.getElementById('board');
 const matchesElement = document.getElementById('matches');
 const remainingElement = document.getElementById('remaining');
@@ -553,527 +471,656 @@ const winText = document.getElementById('win-text');
 const shuffleCountElement = document.getElementById('shuffle-count');
 const shuffleWarning = document.getElementById('shuffle-warning');
 
-// ==================== INITIALIZATION ====================
-function initGame() {
-    createTiles();
-    updateFreeTiles();
+/** ==================== UTIL ==================== */
+function shuffleInPlace(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+}
+
+function keyPos(p){ return `${p.l}:${p.gx}:${p.gy}`; }
+function keyColumn(p){ return `${p.gx}:${p.gy}`; }
+
+function showProverbMessage(text){
+  const existing=document.querySelector('.proverb-message');
+  if(existing) existing.remove();
+  const div=document.createElement('div');
+  div.className='proverb-message';
+  div.textContent=text;
+  document.body.appendChild(div);
+  setTimeout(()=>{ if(div.parentNode) div.remove(); }, 3200);
+}
+
+function showSymbolInfo(symbol){
+  symbolNameElement.textContent = symbol.name;
+  symbolMeaningElement.textContent = symbol.meaning;
+}
+
+/** ==================== LAYOUT (64 positions, stacked) ==================== */
+/**
+ * Layer 1 (bottom): 8x4 = 32
+ * Layer 2:          6x3 = 18
+ * Layer 3:          4x2 =  8
+ * Layer 4 (top):    2x3 =  6
+ * Total = 64
+ */
+function buildLayout64(){
+  const layout = [];
+
+  // l=1 bottom
+  for(let gy=0; gy<4; gy++){
+    for(let gx=0; gx<8; gx++){
+      layout.push({ l:1, gx, gy });
+    }
+  }
+
+  // l=2
+  for(let gy=0; gy<3; gy++){
+    for(let gx=1; gx<=6; gx++){
+      layout.push({ l:2, gx, gy });
+    }
+  }
+
+  // l=3
+  for(let gy=0; gy<2; gy++){
+    for(let gx=2; gx<=5; gx++){
+      layout.push({ l:3, gx, gy });
+    }
+  }
+
+  // l=4
+  for(let gy=0; gy<3; gy++){
+    for(let gx=3; gx<=4; gx++){
+      layout.push({ l:4, gx, gy });
+    }
+  }
+
+  if(layout.length !== 64){
+    throw new Error(`Layout error: expected 64 positions, got ${layout.length}`);
+  }
+  return layout;
+}
+
+/** ==================== FREE TILE RULES (stacked solitaire) ==================== */
+/**
+ * A tile is FREE if:
+ *  1) No tile exists directly above it at same (gx,gy) on any higher layer.
+ *  2) At least one horizontal side is open on same layer (no left neighbor OR no right neighbor).
+ */
+function computeFreeSet(occupiedSet){
+  const freeSet = new Set();
+
+  for(const pos of occupiedSet){
+    const { l, gx, gy } = pos;
+
+    // Above blocker?
+    let hasAbove = false;
+    for(let higher=l+1; higher<=4; higher++){
+      if(occupiedSet.has(`${higher}:${gx}:${gy}`)){
+        hasAbove = true;
+        break;
+      }
+    }
+    if(hasAbove) continue;
+
+    const leftKey = `${l}:${gx-1}:${gy}`;
+    const rightKey = `${l}:${gx+1}:${gy}`;
+    const leftBlocked = occupiedSet.has(leftKey);
+    const rightBlocked = occupiedSet.has(rightKey);
+
+    if(!leftBlocked || !rightBlocked){
+      freeSet.add(`${l}:${gx}:${gy}`);
+    }
+  }
+
+  return freeSet;
+}
+
+/** ==================== WINNABLE GENERATION (reverse-removal assignment) ==================== */
+function generateWinnableTiles(){
+  const layout = buildLayout64();
+  gameState.layout = layout;
+
+  // Remaining positions as keys
+  const remaining = new Set(layout.map(keyPos));
+
+  // Build symbol pool: 32 symbols x2
+  const symbols = [];
+  for(const s of foodSymbols){ symbols.push(s, s); }
+  shuffleInPlace(symbols);
+
+  const assigned = new Map(); // posKey -> symbol
+  const columnSymbol = new Map(); // gx:gy -> symbolId to prevent same tile stacked directly
+
+  // Repeat: pick two currently-free positions, assign next symbol pair, remove them from remaining
+  let symIndex = 0;
+  let guard = 0;
+
+  while(remaining.size > 0){
+    guard++;
+    if(guard > 5000) throw new Error("Generation guard triggered (unexpected).");
+
+    const freeKeys = Array.from(computeFreeSet(remaining));
+    if(freeKeys.length < 2){
+      // Extremely unlikely with this layout; but if it happens, reshuffle symbols and restart.
+      return generateWinnableTiles();
+    }
+
+    // Pick two free positions that won't violate "no identical stacked in same column"
+    const s = symbols[symIndex];
+    const sId = s.id;
+
+    // Find first candidate
+    shuffleInPlace(freeKeys);
+    let a = null;
+    let b = null;
+
+    for(let i=0;i<freeKeys.length;i++){
+      const kA = freeKeys[i];
+      const [lA,gxA,gyA] = kA.split(':').map(Number);
+      const colA = `${gxA}:${gyA}`;
+      if(columnSymbol.get(colA) === sId) continue;
+
+      for(let j=i+1;j<freeKeys.length;j++){
+        const kB = freeKeys[j];
+        const [lB,gxB,gyB] = kB.split(':').map(Number);
+        const colB = `${gxB}:${gyB}`;
+        if(columnSymbol.get(colB) === sId) continue;
+
+        a = kA; b = kB;
+        break;
+      }
+      if(a && b) break;
+    }
+
+    if(!a || !b){
+      // Could not place this symbol pair without stacking-identical violation.
+      // Move this symbol pair later by reshuffling the remaining symbols slice.
+      const slice = symbols.slice(symIndex);
+      shuffleInPlace(slice);
+      for(let i=0;i<slice.length;i++) symbols[symIndex+i] = slice[i];
+      continue;
+    }
+
+    assigned.set(a, s);
+    assigned.set(b, s);
+
+    // Mark columns used by this symbol id (prevents identical vertical stacking)
+    {
+      const [,gxA,gyA] = a.split(':');
+      const [,gxB,gyB] = b.split(':');
+      columnSymbol.set(`${gxA}:${gyA}`, sId);
+      columnSymbol.set(`${gxB}:${gyB}`, sId);
+    }
+
+    remaining.delete(a);
+    remaining.delete(b);
+    symIndex += 2;
+  }
+
+  // Build tile objects in stable ID order
+  const tiles = layout.map((pos, idx) => {
+    const k = keyPos(pos);
+    const symbol = assigned.get(k);
+    if(!symbol) throw new Error("Assignment missing for a position.");
+    return {
+      id: idx,
+      pos,
+      symbol,
+      matched: false,
+      selected: false,
+      free: false
+    };
+  });
+
+  gameState.tiles = tiles;
+  gameState.matches = 0;
+  gameState.remaining = 64;
+  gameState.totalTiles = 64;
+  gameState.selectedId = null;
+}
+
+/** ==================== GEOMETRY (responsive stacking) ==================== */
+function computeGeometry(){
+  const containerWidth = boardElement.clientWidth || boardElement.parentElement.clientWidth || 600;
+
+  // target: fit 8 columns + overlap space comfortably
+  const tileW = Math.max(46, Math.min(78, Math.floor(containerWidth / 10.2)));
+  const tileH = Math.round(tileW * (87/70));
+
+  // Overlap steps (stacked look)
+  const stepX = Math.round(tileW * 0.78);
+  const stepY = Math.round(tileH * 0.78);
+
+  const pad = Math.round(tileW * 0.35);
+  const liftX = Math.round(tileW * 0.14);
+  const liftY = Math.round(tileH * 0.10);
+
+  // compute extents from layout
+  const layout = gameState.layout.length ? gameState.layout : buildLayout64();
+
+  let maxX = 0, maxY = 0, minX = 1e9, minY = 1e9;
+  for(const p of layout){
+    const x = pad + p.gx*stepX + (p.l-1)*liftX;
+    const y = pad + p.gy*stepY - (p.l-1)*liftY;
+    minX = Math.min(minX, x);
+    minY = Math.min(minY, y);
+    maxX = Math.max(maxX, x);
+    maxY = Math.max(maxY, y);
+  }
+
+  const boardW = Math.max(containerWidth, Math.ceil((maxX - minX) + tileW + pad));
+  const boardH = Math.ceil((maxY - minY) + tileH + pad);
+
+  gameState.geom = { tileW, tileH, stepX, stepY, pad, liftX, liftY, boardW, boardH, minX, minY };
+  boardElement.style.height = `${boardH}px`;
+}
+
+/** ==================== FREE TILE UPDATE ==================== */
+function updateFreeTiles(){
+  const occupied = new Set();
+  for(const t of gameState.tiles){
+    if(!t.matched) occupied.add(keyPos(t.pos));
+  }
+
+  const freeKeys = computeFreeSet(occupied);
+  for(const t of gameState.tiles){
+    if(t.matched){ t.free = false; continue; }
+    t.free = freeKeys.has(keyPos(t.pos));
+  }
+
+  // If only a few left, keep it moving
+  const active = gameState.tiles.filter(t => !t.matched);
+  if(active.length <= 4){
+    for(const t of active) t.free = true;
+  }
+}
+
+/** ==================== RENDER ==================== */
+function renderBoard(){
+  computeGeometry();
+  boardElement.innerHTML = '';
+
+  const { tileW, tileH, stepX, stepY, pad, liftX, liftY, minX, minY } = gameState.geom;
+
+  // Sort: higher layer on top
+  const sorted = [...gameState.tiles].sort((a,b) => {
+    if(a.pos.l !== b.pos.l) return a.pos.l - b.pos.l;
+    if(a.pos.gy !== b.pos.gy) return a.pos.gy - b.pos.gy;
+    return a.pos.gx - b.pos.gx;
+  });
+
+  for(const tile of sorted){
+    if(tile.matched) continue;
+
+    const el = document.createElement('div');
+    el.className = 'tile';
+    el.dataset.id = String(tile.id);
+
+    if(tile.selected) el.classList.add('selected');
+    if(!tile.free) el.classList.add('blocked');
+
+    // position
+    const x = pad + tile.pos.gx*stepX + (tile.pos.l-1)*liftX - minX + pad;
+    const y = pad + tile.pos.gy*stepY - (tile.pos.l-1)*liftY - minY + pad;
+
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    el.style.width = `${tileW}px`;
+    el.style.height = `${tileH}px`;
+
+    // z-index: layer dominates
+    el.style.zIndex = String(tile.pos.l * 1000 + tile.pos.gy * 10 + tile.pos.gx);
+
+    const img = document.createElement('img');
+    img.src = `images/${tile.symbol.imageFile}`;
+    img.alt = tile.symbol.name;
+    img.onerror = function(){
+      const initial = encodeURIComponent(tile.symbol.name.charAt(0).toUpperCase());
+      this.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="70" height="87" viewBox="0 0 70 87"><rect width="70" height="87" fill="%23b08968" rx="12"/><text x="35" y="52" font-family="Arial" font-size="26" fill="%23f9a826" text-anchor="middle">${initial}</text></svg>`;
+    };
+    el.appendChild(img);
+
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectTile(tile.id);
+    });
+
+    boardElement.appendChild(el);
+  }
+
+  updateButtonStates();
+}
+
+/** ==================== GAMEPLAY ==================== */
+function selectTile(tileId){
+  const tile = gameState.tiles.find(t => t.id === tileId);
+  if(!tile || tile.matched || !tile.free) return;
+
+  gameState.lastMoveTime = new Date();
+  gameState.proverbShown = false;
+
+  // no selection yet
+  if(gameState.selectedId === null){
+    for(const t of gameState.tiles) t.selected = false;
+    tile.selected = true;
+    gameState.selectedId = tile.id;
+    showSymbolInfo(tile.symbol);
     renderBoard();
-    startTimer();
+    return;
+  }
+
+  // clicked same tile = deselect
+  if(gameState.selectedId === tile.id){
+    tile.selected = false;
+    gameState.selectedId = null;
+    renderBoard();
+    return;
+  }
+
+  const first = gameState.tiles.find(t => t.id === gameState.selectedId);
+  if(!first){
+    gameState.selectedId = null;
+    tile.selected = true;
+    gameState.selectedId = tile.id;
+    showSymbolInfo(tile.symbol);
+    renderBoard();
+    return;
+  }
+
+  // check match
+  if(first.symbol.id === tile.symbol.id){
+    first.matched = true;
+    tile.matched = true;
+    first.selected = false;
+    tile.selected = false;
+    gameState.selectedId = null;
+
+    gameState.matches += 1;
+    gameState.remaining -= 2;
+
+    updateFreeTiles();
     updateStats();
-    gameState.lastMoveTime = new Date();
-    gameState.proverbShown = false;
-    gameState.shufflesRemaining = 3;
-    updateShuffleCount();
-    startStuckDetection();
-    updateButtonStates();
-}
+    renderBoard();
 
-// ==================== TILE CREATION ====================
-function createTiles() {
-    gameState.tiles = [];
-    
-    // 64 tiles exactly - each of the 32 symbols appears twice
-    const tilesNeeded = 64;
-    const symbolCount = foodSymbols.length;
-    
-    // Create symbol pool - each symbol twice
-    let symbolPool = [];
-    for (let i = 0; i < symbolCount; i++) {
-        symbolPool.push(foodSymbols[i]); // First copy
-        symbolPool.push(foodSymbols[i]); // Second copy
+    if(gameState.remaining === 0){
+      endLevel();
+    }else{
+      showProverbMessage("Good match!");
     }
-    
-    // Shuffle thoroughly
-    for (let i = symbolPool.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [symbolPool[i], symbolPool[j]] = [symbolPool[j], symbolPool[i]];
-    }
-    
-    // Generate pyramid positions
-    const positions = generatePyramidPositions(tilesNeeded, gameState.level);
-    
-    // Create tiles
-    for (let i = 0; i < tilesNeeded; i++) {
-        gameState.tiles.push({
-            id: i,
-            symbol: symbolPool[i],
-            matched: false,
-            selected: false,
-            x: positions[i].x,
-            y: positions[i].y,
-            level: positions[i].level,
-            free: false
-        });
-    }
-    
-    gameState.matches = 0;
-    gameState.remaining = tilesNeeded;
-    gameState.totalTiles = tilesNeeded;
-}
-
-// ==================== PYRAMID POSITION GENERATOR ====================
-function generatePyramidPositions(totalTiles, level = 1) {
-    const positions = [];
-    const columns = 8;
-    const rowStep = 95; // Height + gap between rows
-    const tileWidth = 75; // Width + gap between columns
-
-    // Different configurations for different levels
-    let levelConfigs;
-    
-    if (level === 1) {
-        // Level 1 - Easier, shallower pyramid
-        levelConfigs = [
-            { rows: 2, yOffset: 0, xOffset: 25 },   // Bottom level
-            { rows: 2, yOffset: 30, xOffset: 15 },  // Middle level
-            { rows: 1, yOffset: 60, xOffset: 5 }    // Top level
-        ];
-    } else {
-        // Level 2+ - Classic deeper pyramid
-        levelConfigs = [
-            { rows: 3, yOffset: 0, xOffset: 15 },   // Bottom level (widest)
-            { rows: 3, yOffset: 25, xOffset: 10 },  // Level 2
-            { rows: 2, yOffset: 45, xOffset: 5 },   // Level 3
-            { rows: 1, yOffset: 65, xOffset: 0 }    // Top level (narrowest)
-        ];
-    }
-
-    let tileIndex = 0;
-
-    // Fill from bottom to top
-    for (let levelIdx = 0; levelIdx < levelConfigs.length; levelIdx++) {
-        const config = levelConfigs[levelIdx];
-        const levelNumber = levelIdx + 1; // 1 = bottom, 4 = top
-
-        for (let row = 0; row < config.rows; row++) {
-            let tilesInRow = columns;
-            
-            // Adjust row width based on level
-            if (level === 1) {
-                if (levelIdx === 1) tilesInRow = 6;      // Middle level narrower
-                if (levelIdx === 2) tilesInRow = 4;      // Top level narrowest
-            } else {
-                if (levelIdx === 2) tilesInRow = 6;      // Level 3 narrower
-                if (levelIdx === 3) tilesInRow = 4;      // Top level narrowest
-            }
-
-            const startCol = Math.floor((columns - tilesInRow) / 2);
-
-            for (let col = 0; col < tilesInRow; col++) {
-                if (tileIndex >= totalTiles) break;
-
-                positions.push({
-                    x: (startCol + col) * tileWidth + config.xOffset,
-                    y: row * rowStep + config.yOffset,
-                    level: levelNumber
-                });
-
-                tileIndex++;
-            }
-            if (tileIndex >= totalTiles) break;
-        }
-        if (tileIndex >= totalTiles) break;
-    }
-
-    // Flip Y coordinates so top of screen is top of pyramid
-    const ys = positions.map(p => p.y);
-    const maxY = Math.max(...ys);
-    positions.forEach(p => {
-        p.y = 30 + (maxY - p.y); // Flip + top padding
-    });
-
-    return positions;
-}
-
-// ==================== FREE TILE DETECTION ====================
-function updateFreeTiles() {
-    const active = gameState.tiles.filter(t => !t.matched);
-    
-    // Mark all as free initially
-    active.forEach(t => t.free = true);
-    
-    // Check each tile to see if something is on top of it
-    active.forEach(tile => {
-        active.forEach(other => {
-            if (other.id === tile.id) return;
-            
-            // Only higher level tiles can block lower ones
-            if (other.level > tile.level) {
-                // Check overlap - tighter detection for more realistic blocking
-                const overlapX = Math.abs(tile.x - other.x) < 65;
-                const overlapY = Math.abs(tile.y - other.y) < 80;
-                
-                if (overlapX && overlapY) {
-                    tile.free = false;
-                }
-            }
-        });
-    });
-    
-    // CRITICAL FIX: Last 4 tiles are always free to prevent deadlocks
-    if (active.length <= 4) {
-        active.forEach(t => t.free = true);
-    }
-}
-
-// ==================== FIND AVAILABLE MATCHES ====================
-function findAvailableMatches() {
-    const matches = [];
-    const freeTiles = gameState.tiles.filter(tile => !tile.matched && tile.free);
-    
-    for (let i = 0; i < freeTiles.length; i++) {
-        for (let j = i + 1; j < freeTiles.length; j++) {
-            if (freeTiles[i].symbol.id === freeTiles[j].symbol.id) {
-                matches.push([freeTiles[i], freeTiles[j]]);
-            }
-        }
-    }
-    return matches;
-}
-
-// ==================== RENDER BOARD ====================
-function renderBoard() {
-    boardElement.innerHTML = '';
-    
-    // Sort by level descending so higher level tiles (top of pyramid) render on top
-    const sortedTiles = [...gameState.tiles].sort((a, b) => b.level - a.level);
-    
-    sortedTiles.forEach(tile => {
-        if (!tile.matched) {
-            const tileElement = document.createElement('div');
-            tileElement.className = `tile level-${tile.level}`;
-            tileElement.dataset.id = tile.id;
-            
-            if (tile.selected) {
-                tileElement.classList.add('selected');
-            }
-            
-            if (!tile.free) {
-                tileElement.classList.add('blocked');
-            }
-            
-            tileElement.style.left = `${tile.x}px`;
-            tileElement.style.top = `${tile.y}px`;
-            
-            const img = document.createElement('img');
-            img.src = `images/${tile.symbol.imageFile}`;
-            img.alt = tile.symbol.name;
-            img.onerror = function() {
-                // Fallback if image not found
-                this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="70" height="87" viewBox="0 0 70 87"><rect width="70" height="87" fill="%23b08968" rx="12"/><text x="35" y="50" font-family="Arial" font-size="24" fill="%23f9a826" text-anchor="middle">' + tile.symbol.name.charAt(0) + '</text></svg>';
-            };
-            tileElement.appendChild(img);
-            
-            tileElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                selectTile(tile);
-            });
-            
-            boardElement.appendChild(tileElement);
-        }
-    });
-    
-    updateButtonStates();
-}
-
-// ==================== TILE SELECTION ====================
-function selectTile(tile) {
-    if (tile.matched || !tile.free) return;
-    
-    gameState.lastMoveTime = new Date();
-    gameState.proverbShown = false;
-    
-    // No tile selected yet
-    if (!gameState.selectedTile) {
-        // Deselect any previously selected
-        gameState.tiles.forEach(t => t.selected = false);
-        tile.selected = true;
-        gameState.selectedTile = tile;
-        showSymbolInfo(tile.symbol);
-        renderBoard();
-        return;
-    }
-    
-    // Clicked the same tile - deselect it
-    if (gameState.selectedTile.id === tile.id) {
-        gameState.selectedTile.selected = false;
-        gameState.selectedTile = null;
-        renderBoard();
-        return;
-    }
-    
-    // Two different tiles - check if they match
-    if (gameState.selectedTile.symbol.id === tile.symbol.id) {
-        // MATCH FOUND!
-        gameState.selectedTile.matched = true;
-        tile.matched = true;
-        gameState.matches++;
-        gameState.remaining -= 2;
-        
-        gameState.selectedTile.selected = false;
-        gameState.selectedTile = null;
-        
-        updateFreeTiles();
-        renderBoard();
-        updateStats();
-        
-        // Check if level complete
-        if (gameState.remaining === 0) {
-            endLevel();
-        } else {
-            // Play match sound (visual feedback only)
-            showProverbMessage("Good match!");
-        }
-    } else {
-        // WRONG MATCH - show error animation
-        showWrongMatch(tile);
-    }
-}
-
-// ==================== WRONG MATCH ANIMATION ====================
-function showWrongMatch(tile) {
-    const firstTile = gameState.selectedTile;
-    
-    // Highlight both tiles briefly
-    firstTile.selected = true;
+  }else{
+    // wrong match
+    first.selected = true;
     tile.selected = true;
     renderBoard();
-    
+
+    const firstEl = document.querySelector(`.tile[data-id="${first.id}"]`);
+    const secondEl = document.querySelector(`.tile[data-id="${tile.id}"]`);
+    if(firstEl) firstEl.classList.add('wrong-match');
+    if(secondEl) secondEl.classList.add('wrong-match');
+
     setTimeout(() => {
-        const firstEl = document.querySelector(`.tile[data-id="${firstTile.id}"]`);
-        const secondEl = document.querySelector(`.tile[data-id="${tile.id}"]`);
-        
-        if (firstEl) firstEl.classList.add('wrong-match');
-        if (secondEl) secondEl.classList.add('wrong-match');
-        
-        setTimeout(() => {
-            if (firstEl) firstEl.classList.remove('wrong-match');
-            if (secondEl) secondEl.classList.remove('wrong-match');
-            
-            firstTile.selected = false;
-            tile.selected = false;
-            gameState.selectedTile = null;
-            renderBoard();
-            
-            showProverbMessage(lossProverbs[Math.floor(Math.random() * lossProverbs.length)]);
-        }, 400);
-    }, 100);
+      if(firstEl) firstEl.classList.remove('wrong-match');
+      if(secondEl) secondEl.classList.remove('wrong-match');
+      first.selected = false;
+      tile.selected = false;
+      gameState.selectedId = null;
+      renderBoard();
+      showProverbMessage(lossProverbs[Math.floor(Math.random()*lossProverbs.length)]);
+    }, 420);
+  }
 }
 
-// ==================== STUCK DETECTION ====================
-function startStuckDetection() {
-    clearInterval(gameState.stuckTimer);
-    gameState.stuckTimer = setInterval(() => {
-        const now = new Date();
-        const timeSinceLastMove = (now - gameState.lastMoveTime) / 1000;
-        
-        if (timeSinceLastMove > 20 && !gameState.proverbShown && gameState.remaining > 0) {
-            showEncouragingProverb();
-            gameState.proverbShown = true;
+function findAvailableMatches(){
+  const freeTiles = gameState.tiles.filter(t => !t.matched && t.free);
+  const bySymbol = new Map();
+  for(const t of freeTiles){
+    const k = t.symbol.id;
+    if(!bySymbol.has(k)) bySymbol.set(k, []);
+    bySymbol.get(k).push(t);
+  }
+  const matches = [];
+  for(const arr of bySymbol.values()){
+    if(arr.length >= 2){
+      for(let i=0;i<arr.length;i++){
+        for(let j=i+1;j<arr.length;j++){
+          matches.push([arr[i], arr[j]]);
         }
-        
-        // Check for unwinnable state
-        const activeTiles = gameState.tiles.filter(t => !t.matched);
-        const matches = findAvailableMatches();
-        
-        if (matches.length === 0 && activeTiles.length > 0) {
-            // No matches available - handle it
-            handleNoMatches();
-        }
-    }, 1000);
-}
-
-// ==================== HANDLE NO MATCHES AVAILABLE ====================
-function handleNoMatches() {
-    const activeTiles = gameState.tiles.filter(t => !t.matched);
-    
-    if (activeTiles.length <= 4) {
-        // Last few tiles - force them free
-        activeTiles.forEach(t => t.free = true);
-        renderBoard();
-        showProverbMessage("Almost there! Keep going...");
-        return;
+      }
     }
-    
-    // Need to shuffle
-    if (gameState.shufflesRemaining > 0) {
-        showProverbMessage("No matches available. Stirring the pot...");
-        shuffleTiles(false);
-    } else {
-        // Out of shuffles - force a free shuffle
-        showProverbMessage("Out of shuffles! One free shuffle...");
-        shuffleTiles(true);
+  }
+  return matches;
+}
+
+/** ==================== STUCK DETECTION ==================== */
+function startStuckDetection(){
+  clearInterval(gameState.stuckTimer);
+  gameState.stuckTimer = setInterval(() => {
+    const now = new Date();
+    const timeSinceLastMove = (now - gameState.lastMoveTime) / 1000;
+
+    if(timeSinceLastMove > 20 && !gameState.proverbShown && gameState.remaining > 0){
+      showProverbMessage(proverbs[Math.floor(Math.random()*proverbs.length)]);
+      gameState.proverbShown = true;
     }
-}
 
-// ==================== SHOW PROVERB MESSAGE ====================
-function showProverbMessage(proverb) {
-    // Remove any existing message
-    const existing = document.querySelector('.proverb-message');
-    if (existing) existing.remove();
-    
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'proverb-message';
-    messageDiv.textContent = proverb;
-    
-    document.body.appendChild(messageDiv);
-    
-    setTimeout(() => {
-        if (document.body.contains(messageDiv)) {
-            document.body.removeChild(messageDiv);
-        }
-    }, 3500);
-}
-
-// ==================== SHOW ENCOURAGING PROVERB ====================
-function showEncouragingProverb() {
-    const proverb = proverbs[Math.floor(Math.random() * proverbs.length)];
-    showProverbMessage(proverb);
-}
-
-// ==================== SHOW SYMBOL INFO ====================
-function showSymbolInfo(symbol) {
-    symbolNameElement.textContent = symbol.name;
-    symbolMeaningElement.textContent = symbol.meaning;
-}
-
-// ==================== UPDATE STATS ====================
-function updateStats() {
-    matchesElement.textContent = gameState.matches;
-    remainingElement.textContent = gameState.remaining;
-    levelElement.textContent = gameState.level;
-    totalTilesElement.textContent = gameState.totalTiles;
-    updateShuffleCount();
-}
-
-// ==================== UPDATE SHUFFLE COUNT ====================
-function updateShuffleCount() {
-    shuffleCountElement.textContent = gameState.shufflesRemaining;
-    if (gameState.shufflesRemaining === 0) {
-        shuffleWarning.textContent = "No shuffles remaining - but game will auto-shuffle if stuck";
-    } else {
-        shuffleWarning.textContent = "";
+    const matches = findAvailableMatches();
+    const active = gameState.tiles.filter(t => !t.matched);
+    if(active.length > 0 && matches.length === 0){
+      handleNoMatches();
     }
+  }, 1000);
 }
 
-// ==================== UPDATE BUTTON STATES ====================
-function updateButtonStates() {
-    shuffleButton.disabled = gameState.shufflesRemaining <= 0 && findAvailableMatches().length === 0;
-    hintButton.disabled = findAvailableMatches().length === 0;
-}
-
-// ==================== TIMER ====================
-function startTimer() {
-    gameState.startTime = new Date();
-    clearInterval(gameState.timerInterval);
-    
-    gameState.timerInterval = setInterval(() => {
-        const now = new Date();
-        gameState.elapsedTime = Math.floor((now - gameState.startTime) / 1000);
-        const minutes = Math.floor(gameState.elapsedTime / 60);
-        const seconds = gameState.elapsedTime % 60;
-        timeElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }, 1000);
-}
-
-// ==================== HINT ====================
-function provideHint() {
-    const availableMatches = findAvailableMatches();
-    if (availableMatches.length > 0) {
-        const match = availableMatches[0];
-        match[0].selected = true;
-        match[1].selected = true;
-        renderBoard();
-        
-        setTimeout(() => {
-            match[0].selected = false;
-            match[1].selected = false;
-            renderBoard();
-        }, 2000);
-        
-        showSymbolInfo(match[0].symbol);
-    }
-}
-
-// ==================== SHUFFLE ====================
-function shuffleTiles(force = false) {
-    if (!force && gameState.shufflesRemaining <= 0) {
-        showProverbMessage("No shuffles left!");
-        return;
-    }
-    
-    if (!force) {
-        gameState.shufflesRemaining--;
-        updateShuffleCount();
-    }
-    
-    // Clear selection
-    if (gameState.selectedTile) {
-        gameState.selectedTile.selected = false;
-        gameState.selectedTile = null;
-    }
-    
-    // Get unmatched tiles
-    const unmatchedTiles = gameState.tiles.filter(tile => !tile.matched);
-    
-    // Shuffle their symbols
-    const symbols = unmatchedTiles.map(tile => tile.symbol);
-    for (let i = symbols.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [symbols[i], symbols[j]] = [symbols[j], symbols[i]];
-    }
-    
-    unmatchedTiles.forEach((tile, index) => {
-        tile.symbol = symbols[index];
-    });
-    
-    updateFreeTiles();
+function handleNoMatches(){
+  const active = gameState.tiles.filter(t => !t.matched);
+  if(active.length <= 4){
+    for(const t of active) t.free = true;
     renderBoard();
-    
-    showProverbMessage("Ingredients stirred and rearranged!");
+    showProverbMessage("Almost there! Keep going...");
+    return;
+  }
+
+  if(gameState.shufflesRemaining > 0){
+    showProverbMessage("No matches available. Stirring the pot...");
+    shuffleTiles(false);
+  }else{
+    showProverbMessage("Out of shuffles! One free shuffle...");
+    shuffleTiles(true);
+  }
 }
 
-// ==================== RESET GAME ====================
-function resetGame() {
-    clearInterval(gameState.timerInterval);
-    clearInterval(gameState.stuckTimer);
-    winMessage.classList.add('hidden');
-    gameState.level = 1;
-    initGame();
+/** ==================== HINT ==================== */
+function provideHint(){
+  const matches = findAvailableMatches();
+  if(matches.length === 0) return;
+
+  const [a,b] = matches[0];
+  a.selected = true;
+  b.selected = true;
+  renderBoard();
+  showSymbolInfo(a.symbol);
+
+  setTimeout(() => {
+    a.selected = false;
+    b.selected = false;
+    renderBoard();
+  }, 1600);
 }
 
-// ==================== NEXT LEVEL ====================
-function nextLevel() {
-    clearInterval(gameState.timerInterval);
-    clearInterval(gameState.stuckTimer);
-    winMessage.classList.add('hidden');
-    gameState.level++;
-    initGame();
-}
+/** ==================== SHUFFLE (keeps hard stacked rules) ==================== */
+function shuffleTiles(force=false){
+  if(!force && gameState.shufflesRemaining <= 0){
+    showProverbMessage("No shuffles left!");
+    return;
+  }
+  if(!force){
+    gameState.shufflesRemaining -= 1;
+    updateShuffleCount();
+  }
 
-// ==================== END LEVEL ====================
-function endLevel() {
-    clearInterval(gameState.timerInterval);
-    clearInterval(gameState.stuckTimer);
-    
-    if (gameState.level === 1) {
-        winText.textContent = `🎉 Level ${gameState.level} Complete! Ready for a more challenging layout?`;
-    } else {
-        winText.textContent = `🎉 Level ${gameState.level} Complete! You're a true pantry master!`;
+  // clear selection
+  if(gameState.selectedId !== null){
+    const sel = gameState.tiles.find(t => t.id === gameState.selectedId);
+    if(sel) sel.selected = false;
+    gameState.selectedId = null;
+  }
+
+  const unmatched = gameState.tiles.filter(t => !t.matched);
+
+  // shuffle symbols only
+  const symbols = unmatched.map(t => t.symbol);
+  shuffleInPlace(symbols);
+  for(let i=0;i<unmatched.length;i++){
+    unmatched[i].symbol = symbols[i];
+  }
+
+  // re-apply "no identical stacked" rule by swapping if needed
+  const posByColumn = new Map(); // gx:gy -> list of tiles at that column across layers
+  for(const t of unmatched){
+    const col = keyColumn(t.pos);
+    if(!posByColumn.has(col)) posByColumn.set(col, []);
+    posByColumn.get(col).push(t);
+  }
+
+  // try to resolve conflicts with limited swaps
+  const tilesList = [...unmatched];
+  let attempts = 0;
+
+  function hasColumnConflict(){
+    for(const arr of posByColumn.values()){
+      const seen = new Set();
+      for(const t of arr){
+        if(seen.has(t.symbol.id)) return true;
+        seen.add(t.symbol.id);
+      }
     }
-    
-    winMessage.classList.remove('hidden');
+    return false;
+  }
+
+  while(hasColumnConflict() && attempts < 1500){
+    attempts++;
+    // pick a conflicted column tile and swap with a random tile
+    const conflictedTiles = [];
+    for(const arr of posByColumn.values()){
+      const seen = new Set();
+      for(const t of arr){
+        if(seen.has(t.symbol.id)) conflictedTiles.push(t);
+        else seen.add(t.symbol.id);
+      }
+    }
+    if(conflictedTiles.length === 0) break;
+
+    const t1 = conflictedTiles[Math.floor(Math.random()*conflictedTiles.length)];
+    const t2 = tilesList[Math.floor(Math.random()*tilesList.length)];
+    if(t1 === t2) continue;
+
+    const sTmp = t1.symbol;
+    t1.symbol = t2.symbol;
+    t2.symbol = sTmp;
+  }
+
+  updateFreeTiles();
+  renderBoard();
+  showProverbMessage("Ingredients stirred and rearranged!");
 }
 
-// ==================== EVENT LISTENERS ====================
+/** ==================== STATS/TIMER/UI ==================== */
+function updateStats(){
+  matchesElement.textContent = String(gameState.matches);
+  remainingElement.textContent = String(gameState.remaining);
+  levelElement.textContent = String(gameState.level);
+  totalTilesElement.textContent = String(gameState.totalTiles);
+  updateShuffleCount();
+}
+
+function updateShuffleCount(){
+  shuffleCountElement.textContent = String(gameState.shufflesRemaining);
+  shuffleWarning.textContent = (gameState.shufflesRemaining === 0)
+    ? "No shuffles remaining — but the game will auto-shuffle if stuck"
+    : "";
+}
+
+function updateButtonStates(){
+  const matches = findAvailableMatches();
+  hintButton.disabled = matches.length === 0;
+  shuffleButton.disabled = (gameState.shufflesRemaining <= 0 && matches.length > 0) ? false : false;
+  // note: shuffle is always allowed when user has shuffles; stuck auto-shuffles when needed
+  if(gameState.shufflesRemaining <= 0){
+    shuffleButton.disabled = true;
+  }
+}
+
+function startTimer(){
+  gameState.startTime = new Date();
+  clearInterval(gameState.timerInterval);
+  gameState.timerInterval = setInterval(() => {
+    const now = new Date();
+    gameState.elapsedTime = Math.floor((now - gameState.startTime)/1000);
+    const m = Math.floor(gameState.elapsedTime/60);
+    const s = gameState.elapsedTime%60;
+    timeElement.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }, 1000);
+}
+
+/** ==================== LEVEL FLOW ==================== */
+function endLevel(){
+  clearInterval(gameState.timerInterval);
+  clearInterval(gameState.stuckTimer);
+
+  winText.textContent = (gameState.level === 1)
+    ? `🎉 Level ${gameState.level} Complete! Ready for a tougher stacked layout?`
+    : `🎉 Level ${gameState.level} Complete! You're a true pantry master!`;
+
+  winMessage.classList.remove('hidden');
+}
+
+function resetGame(){
+  clearInterval(gameState.timerInterval);
+  clearInterval(gameState.stuckTimer);
+  winMessage.classList.add('hidden');
+  gameState.level = 1;
+  initGame();
+}
+
+function nextLevel(){
+  clearInterval(gameState.timerInterval);
+  clearInterval(gameState.stuckTimer);
+  winMessage.classList.add('hidden');
+  gameState.level += 1;
+  initGame();
+}
+
+/** ==================== INIT ==================== */
+function initGame(){
+  // If you later want multiple layouts per level, change buildLayout64() based on level.
+  generateWinnableTiles();
+  gameState.selectedId = null;
+  gameState.lastMoveTime = new Date();
+  gameState.proverbShown = false;
+  gameState.shufflesRemaining = 3;
+
+  updateFreeTiles();
+  updateStats();
+  startTimer();
+  startStuckDetection();
+  renderBoard();
+  updateButtonStates();
+}
+
 hintButton.addEventListener('click', provideHint);
 shuffleButton.addEventListener('click', () => shuffleTiles(false));
 resetButton.addEventListener('click', resetGame);
 nextLevelButton.addEventListener('click', nextLevel);
 playAgainButton.addEventListener('click', resetGame);
 
-// Initialize when page loads
 window.addEventListener('DOMContentLoaded', initGame);
+
+// Responsive reflow without regenerating the puzzle
+window.addEventListener('resize', () => {
+  renderBoard();
+});
 </script>
 </body>
 </html>
