@@ -377,8 +377,8 @@ const lossProverbs = [
 const foodSymbols = [
     { id: 1, name: "Cow", meaning: "Suya, rich stews, and traditional ceremonies.", imageFile: "cow.png" },
     { id: 2, name: "Crab", meaning: "Coastal soups and crab pepper soup.", imageFile: "crab.png" },
-    { id: 3, name: "Egg", meaning: "Ghanaian egg stew, boiled eggs in puff-puff.", imageFile: "egg.png" },
-    { id: 4, name: "Fire", meaning: "Traditional cooking methods and hearths.", imageFile: "fire.png" },
+    { id: 3, name: "Okra", meaning: "Okra soup, draw soup, thickener for stews.", imageFile: "okra.png" },
+    { id: 4, name: "Beans", meaning: "Gbegiri, ewa aganyin, bean fritters.", imageFile: "beans.png" },
     { id: 5, name: "Fish", meaning: "Grilled tilapia, fish pepper soups.", imageFile: "fish.png" },
     { id: 6, name: "Fishing", meaning: "River and coastal communities.", imageFile: "fishing.png" },
     { id: 7, name: "Goat", meaning: "Goat pepper soup, ceremonial dishes.", imageFile: "goat.png" },
@@ -395,8 +395,8 @@ const foodSymbols = [
     { id: 18, name: "Yam", meaning: "Yam pottage (asaro), boiled yam with sauces.", imageFile: "yam.png" },
     { id: 19, name: "Plantain", meaning: "Kelewele, dodo, fried plantains.", imageFile: "plantain.png" },
     { id: 20, name: "Peanuts", meaning: "Groundnut stew (mafé), peanut sauces.", imageFile: "peanuts.png" },
-    { id: 21, name: "Beans", meaning: "Gbegiri, ewa aganyin, bean fritters.", imageFile: "beans.png" },
-    { id: 22, name: "Okra", meaning: "Okra soup, draw soup, thickener for stews.", imageFile: "okra.png" }
+    { id: 21, name: "Fire", meaning: "Traditional cooking methods and hearths.", imageFile: "fire.png" },
+    { id: 22, name: "Egg", meaning: "Ghanaian egg stew, boiled eggs in puff-puff.", imageFile: "egg.png" }
 ];
 
 // Game state
@@ -453,7 +453,7 @@ function createTiles() {
     const totalTilesNeeded = tilesPerLevel;
     
     // Calculate how many of each symbol we need
-    const symbolCount = foodSymbols.length;
+    const symbolCount = 20;
     const baseCount = Math.floor(totalTilesNeeded / symbolCount);
     const remainder = totalTilesNeeded % symbolCount;
     
