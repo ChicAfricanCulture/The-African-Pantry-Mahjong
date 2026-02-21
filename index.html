@@ -460,22 +460,38 @@ function createTiles() {
         [symbols[i], symbols[j]] = [symbols[j], symbols[i]];
     }
     
-    const positions = generateStackedPositions(gameState.totalTiles, gameState.level);
+  // Generate positions for tiles in complete rows
+function generateStackedPositions(totalTiles, level) {
+    const positions = [];
+    const columns = 8; // Fixed 8 columns
+    const rows = Math.ceil(totalTiles / columns); // Calculate rows needed (will always be whole number)
     
-    for (let i = 0; i < gameState.totalTiles; i++) {
-        gameState.tiles.push({
-            id: i,
-            symbol: symbols[i],
-            matched: false,
-            selected: false,
-            correctMatch: false,
-            x: positions[i].x,
-            y: positions[i].y,
-            level: positions[i].level,
-            free: false
-        });
+    // Calculate how many tiles per level of stacking
+    const maxLevels = Math.min(level + 1, 4);
+    const tilesPerLevel = Math.ceil(totalTiles / maxLevels);
+    
+    let tileIndex = 0;
+    
+    for (let level = 0; level < maxLevels; level++) {
+        const levelTiles = (level === maxLevels - 1) ? 
+            totalTiles - (tilesPerLevel * (maxLevels - 1)) : tilesPerLevel;
+        
+        for (let i = 0; i < levelTiles; i++) {
+            const row = Math.floor(tileIndex / columns);
+            const col = tileIndex % columns;
+            
+            positions.push({
+                x: col * 85 + (level * 4),
+                y: row * 105 + (level * 6),
+                level: level + 1
+            });
+            
+            tileIndex++;
+        }
     }
     
+    return positions;
+}
     updateFreeTiles();
     
     let attempts = 0;
