@@ -1,94 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About — The African Pantry Mahjong</title><link rel="icon" type="image/png" href="images/pot.png">
-<style>
-body{margin:0;padding:20px;background:#0d1b2a;color:#e0e0e0;font-family:system-ui,sans-serif;line-height:1.5;}
-.container{max-width:800px;margin:0 auto;background:#0d1b2a;padding:20px;}
-h1{color:#f9a826;font-weight:400;font-size:2rem;margin:0 0 10px 0;}
-h2{color:#f9a826;font-weight:400;font-size:1.4rem;margin:25px 0 10px 0;}
-p{margin:0 0 15px 0;color:#cbd5e0;}
-a{color:#f9a826;text-decoration:none;border-bottom:1px dotted #f9a826;}
-.play-button{display:inline-block;color:#f9a826;border:1px solid #f9a826;padding:8px 24px;margin:5px 0 20px 0;text-decoration:none;}
-.play-button:hover{background:#f9a826;color:#0d1b2a;}
-.ingredients-list{display:grid;grid-template-columns:repeat(2,1fr);gap:5px 20px;margin:10px 0 20px 0;}
-.ingredient-item{color:#cbd5e0;font-size:0.9rem;border-bottom:1px dotted #2a3a4a;padding:4px 0;}
-.ingredient-name{color:#d4af7a;}
-.ingredient-note{color:#8f9eb0;font-size:0.8rem;float:right;}
-.proverb{font-style:italic;color:#b8c7d6;text-align:center;margin:30px 0;padding:15px;border-top:1px solid #2a3a4a;border-bottom:1px solid #2a3a4a;}
-.how-to-play{background:#1a2a3a;padding:15px;margin:15px 0;border-left:3px solid #f9a826;}
-.how-to-play ol{margin:0 0 0 20px;color:#cbd5e0;}
-.how-to-play li{margin:5px 0;}
-.feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:15px 0;}
-.feature-item{background:#1a2a3a;padding:10px;color:#cbd5e0;font-size:0.9rem;}
-.footer{margin-top:30px;padding-top:15px;border-top:1px solid #2a3a4a;text-align:center;color:#7f8fa0;font-size:0.8rem;}
-.tagline{font-size:1.2rem;color:#d4af7a;text-align:center;margin:25px 0 5px 0;font-weight:300;}
-.sub-tagline{text-align:center;color:#7f8fa0;font-size:0.8rem;text-transform:uppercase;}
-hr{border:none;border-top:1px solid #2a3a4a;margin:20px 0;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The African Pantry Mahjong</title>
+    
+    <!-- Social Media Meta Tags -->
+    <meta property="og:title" content="The African Pantry Mahjong">
+    <meta property="og:description" content="Match ingredients, discover recipes, and explore African foodways.">
+    <meta property="og:url" content="https://chicafricanculture.github.io/The-African-Pantry-Mahjong/">
+    <meta property="og:type" content="website">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Adlam:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a3a, #0d1b2a);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 40px 20px;
+            background: linear-gradient(rgba(13, 27, 42, 0.9), rgba(13, 27, 42, 0.9));
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: #f9a826;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #b8c7d6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .archive-link {
+            text-align: center;
+            margin: 0.5rem 0 1.5rem;
+            font-size: 1rem;
+            color: #6a5f52;
+        }
+        
+        .archive-link a {
+            color: #f9a826;
+            text-decoration: none;
+        }
+        
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .board-container {
+            background: rgba(13, 27, 42, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 600px;
+            position: relative;
+        }
+        
+        .info-panel {
+            background: rgba(13, 27, 42, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            background: rgba(26, 42, 58, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #f9a826;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #b8c7d6;
+        }
+        
+        .symbol-info {
+            background: rgba(26, 42, 58, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .symbol-name {
+            font-size: 1.2rem;
+            color: #f9a826;
+            margin-bottom: 8px;
+        }
+        
+        .symbol-meaning {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #b8c7d6;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #f9a826, #e8951e);
+            color: #1a2a3a;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249, 168, 38, 0.4);
+        }
+        
+        .mahjong-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            justify-items: center;
+            position: relative;
+            min-height: 500px;
+        }
+        
+        .tile {
+            width: 80px;
+            height: 100px;
+            background: linear-gradient(145deg, #e8d0b0, #b08968);
+            border: 3px solid #c49a6c;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+            position: absolute;
+            overflow: hidden;
+            padding: 5px;
+        }
+        
+        .tile:hover {
+            transform: scale(1.08) translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+        }
+        
+        .tile.selected {
+            transform: translateY(-8px);
+            box-shadow: 0 0 20px #d97706;
+            border-color: #d97706;
+        }
+        
+        .tile.matched {
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        
+        .tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .tile.level-1 { z-index: 10; }
+        .tile.level-2 { z-index: 20; }
+        .tile.level-3 { z-index: 30; }
+        .tile.level-4 { z-index: 40; }
+        
+        .proverb-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(249, 168, 38, 0.95);
+            color: #1a2a3a;
+            padding: 20px 30px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            animation: floatIn 0.5s ease-out;
+        }
+        
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        
+        .level-indicator {
+            background: rgba(26, 42, 58, 0.6);
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .level-text {
+            font-size: 1.1rem;
+            color: #f9a826;
+            font-weight: bold;
+        }
+        
+        .win-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 27, 42, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .win-message h2 {
+            font-size: 2.5rem;
+            color: #f9a826;
+            margin-bottom: 20px;
+        }
+        
+        .win-message p {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            color: #b8c7d6;
+            max-width: 500px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .tile {
+                width: 70px;
+                height: 90px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
-<div class="container"><h1>The African Pantry Mahjong</h1>
-<p class="subtitle">Match ingredients, discover recipes, and explore African foodways.</p>
-<a href="https://chicafricanculture.github.io/african-foodways-data/" class="play-button">PLAY THE GAME</a>
-<hr>
-<h2>About</h2>
-<p>The African Pantry Mahjong transforms classic tile-matching into a journey through African cuisine. Each tile features a black-and-white icon of a real ingredient. Every matched pair reveals a traditional recipe, cultural fact, or cooking wisdom.</p>
-<div class="proverb">"The one who eats alone cannot discuss the taste of the food with others."</div>
-<h2>Ingredients</h2>
-<p>Twenty-two ingredients from across the continent's culinary traditions.</p>
-<div class="ingredients-list">
-<div class="ingredient-item"><span class="ingredient-name">Goat</span> <span class="ingredient-note">pepper soup</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Cow</span> <span class="ingredient-note">suya, stews</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Crab</span> <span class="ingredient-note">coastal soups</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Egg</span> <span class="ingredient-note">egg stew</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Fire</span> <span class="ingredient-note">cooking method</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Fish</span> <span class="ingredient-note">tilapia</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Fishing</span> <span class="ingredient-note">communities</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Maggi</span> <span class="ingredient-note">seasoning</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Mortar</span> <span class="ingredient-note">pounding</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Palm Oil</span> <span class="ingredient-note">banga soup</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Pepper</span> <span class="ingredient-note">scotch bonnet</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Pot</span> <span class="ingredient-note">one-pot meals</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Rice</span> <span class="ingredient-note">jollof</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Salt</span> <span class="ingredient-note">preservation</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Vegetables</span> <span class="ingredient-note">cassava leaves</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Water</span> <span class="ingredient-note">foundation</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Wood</span> <span class="ingredient-note">fuel</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Yam</span> <span class="ingredient-note">asaro</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Plantain</span> <span class="ingredient-note">kelewele</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Peanuts</span> <span class="ingredient-note">groundnut stew</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Beans</span> <span class="ingredient-note">gbegiri</span></div>
-<div class="ingredient-item"><span class="ingredient-name">Okra</span> <span class="ingredient-note">draw soup</span></div>
-</div>
-<div class="instructions">
-    <h2>How to Play</h2>
-    <p>Match identical ingredients to clear the board. Each match reveals a recipe or cultural fact.</p>
-    <ul>
-        <li><strong>Match Tiles:</strong> Click on two identical ingredients</li>
-        <li><strong>Stacked Tiles:</strong> Only top tiles can be selected</li>
-        <li><strong>Learn:</strong> Each ingredient shares a traditional dish</li>
-    </ul>
-</div><h2>Learning Through Play</h2>
-<p>The game is designed for knowledge to emerge naturally through play.</p>
-<div class="feature-grid">
-<div class="feature-item">Regional dishes across Africa</div>
-<div class="feature-item">Cooking techniques and traditions</div>
-<div class="feature-item">Cultural significance of ingredients</div>
-<div class="feature-item">How food connects communities</div>
-</div>
-<div class="proverb">"The firewood that cooks the food is the same one that burns the cook."</div>
-<h2>Project</h2>
-<p>Built with HTML, CSS, JavaScript. Custom black-and-white icons. Part of the African Foodways Project — documenting food traditions across Africa.</p>
-<p><a href="https://chicafricanculture.github.io/african-foodways-data/">Visit the main archive →</a></p>
-<hr>
-<div class="tagline">Match tiles. Discover tastes. Explore the pantry.</div>
-<div class="sub-tagline">The African Pantry Mahjong</div>
-<div class="footer">
-<p>© 2026 The African Foodways Project · <a href="#">MIT License</a></p>
-<p>Inspired by traditional African cooking.</p>
-</div>
-</div>
-<script>
+<body>
+    <div class="container">
+        <header>
+            <h1>The African Pantry Mahjong</h1>
+            <p class="subtitle">Match ingredients, discover recipes, and explore African foodways.</p>
+        </header>
+        
+        <p class="archive-link">
+            Part of the <strong>African Foodways</strong> project. 
+            Explore the <a href="https://chicafricanculture.github.io/african-foodways-data/">main archive, field notes, and recipes here</a>.
+        </p>
+        
+        <div class="game-area">
+            <div class="board-container">
+                <div class="level-indicator">
+                    <div class="level-text">Level: <span id="level">1</span> | Tiles: <span id="total-tiles">88</span></div>
+                </div>
+                <div class="mahjong-board" id="board"></div>
+            </div>
+            
+            <div class="info-panel">
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value" id="matches">0</div>
+                        <div class="stat-label">Matches</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="remaining">88</div>
+                        <div class="stat-label">Remaining</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="time">00:00</div>
+                        <div class="stat-label">Time</div>
+                    </div>
+                </div>
+                
+                <div class="symbol-info">
+                    <div class="symbol-name" id="symbol-name">Select a tile</div>
+                    <div class="symbol-meaning" id="symbol-meaning">Click any ingredient to learn about it</div>
+                </div>
+                
+                <div class="controls">
+                    <button id="hint-btn">Hint</button>
+                    <button id="shuffle-btn">Shuffle</button>
+                    <button id="reset-btn">New Game</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="win-message hidden" id="win-message">
+        <h2>Pantry Cleared!</h2>
+        <p id="win-text">You've matched all the ingredients!</p>
+        <button id="next-level-btn">Next Level</button>
+        <button id="play-again-btn">Play Again</button>
+    </div>
+
+ <script>
 // African food proverbs
 const proverbs = [
     "The one who eats alone cannot discuss the taste of the food with others.",
@@ -523,5 +802,6 @@ playAgainButton.addEventListener('click', resetGame);
 
 // Initialize when page loads
 window.addEventListener('DOMContentLoaded', initGame);
-
 </script>
+</body>
+</html>
