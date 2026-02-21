@@ -59,9 +59,7 @@
 <div class="tagline">Match tiles. Discover tastes. Explore the pantry.</div>
 <div class="sub-tagline">The African Pantry Mahjong</div>
 <div class="footer">
-<p>© 2024 The African Foodways Project · <a href="#">MIT License</a></p>
-<p>Inspired by traditional African cooking.</p>
+<p>© 2026 The African Foodways Project · <a href="#">MIT License</a></p>
 </div>
 </div>
-</body>
-</html>
+
