@@ -1,3 +1,4 @@
+<!-- /index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,6 +24,7 @@
       --tileA:#e8d0b0;
       --tileB:#b08968;
       --tileBorder:#c49a6c;
+      --focus: #ffd18a;
     }
 
     *{ box-sizing:border-box; }
@@ -113,6 +115,7 @@
       background: rgba(26,42,58,0.35);
       border: 1px solid rgba(255,255,255,0.08);
       overflow:hidden;
+      outline: none;
     }
 
     .tile{
@@ -129,7 +132,14 @@
       transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
       padding:6px;
       overflow:hidden;
+      outline: none;
     }
+
+    .tile:focus-visible{
+      box-shadow: 0 0 0 3px rgba(255, 209, 138, 0.45), 0 10px 18px rgba(0,0,0,0.65);
+      border-color: var(--focus);
+    }
+
     .tile:hover:not(.blocked){
       transform: translateY(-2px);
       border-color: var(--accent);
@@ -155,12 +165,14 @@
       object-fit:contain;
       display:block;
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+      pointer-events: none;
     }
 
     .tile.wrong-match{
       animation: shake 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
       border-color:#ff4444 !important;
     }
+
     @keyframes shake {
       10%, 90% { transform: translate3d(-2px, 0, 0); }
       20%, 80% { transform: translate3d(4px, 0, 0); }
@@ -289,6 +301,12 @@
       .stats{ grid-template-columns: repeat(2,1fr); }
       h1{ font-size:2rem; }
     }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce){
+      .tile, button { transition: none !important; }
+      .tile.wrong-match { animation: none !important; }
+    }
   </style>
 </head>
 
@@ -309,18 +327,20 @@
         <div class="level-indicator">
           <span class="level-text">Level <span id="level">1</span> · <span id="total-tiles">64</span> Ingredients</span>
         </div>
-        <div class="mahjong-board" id="board"></div>
+
+        <!-- aria-label helps screen readers; board itself is not focusable -->
+        <div class="mahjong-board" id="board" aria-label="Mahjong board"></div>
       </div>
 
       <div class="info-panel">
-        <div class="stats">
+        <div class="stats" aria-label="Game statistics">
           <div class="stat"><div class="stat-value" id="matches">0</div><div class="stat-label">Matches</div></div>
           <div class="stat"><div class="stat-value" id="remaining">64</div><div class="stat-label">Remaining</div></div>
           <div class="stat"><div class="stat-value" id="time">00:00</div><div class="stat-label">Time</div></div>
           <div class="stat"><div class="stat-value" id="shuffle-count">3</div><div class="stat-label">Shuffles</div></div>
         </div>
 
-        <div class="symbol-info">
+        <div class="symbol-info" aria-live="polite">
           <div class="symbol-name" id="symbol-name">Select a tile</div>
           <div class="symbol-meaning" id="symbol-meaning">Click any ingredient to learn about its place in African cooking</div>
         </div>
@@ -329,8 +349,14 @@
           <button id="hint-btn">🔍 Find Match</button>
           <button id="shuffle-btn">🔄 Shuffle</button>
           <button id="reset-btn">🆕 New Game</button>
+          <button id="sound-btn" aria-pressed="false">🔇 Sound: Off</button>
         </div>
+
         <div class="shuffle-warning" id="shuffle-warning"></div>
+
+        <div style="color: var(--muted); font-size: 0.92rem; line-height: 1.35;">
+          <strong>Keyboard:</strong> Arrow keys to move • Enter/Space to select.
+        </div>
       </div>
     </div>
 
@@ -339,7 +365,7 @@
     </footer>
   </div>
 
-  <div class="win-message hidden" id="win-message">
+  <div class="win-message hidden" id="win-message" role="dialog" aria-modal="true" aria-label="Win message">
     <h2>🏆 Pantry Mastered! 🏆</h2>
     <p id="win-text">You've matched all the ingredients!</p>
     <button id="next-level-btn">⬆️ Next Level</button>
@@ -347,6 +373,7 @@
   </div>
 
 <script>
+/** ==================== PROVERBS ==================== */
 const proverbs = [
   "The one who eats alone cannot discuss the taste of the food with others.",
   "The firewood that cooks the food is the same one that burns the cook.",
@@ -373,6 +400,7 @@ const lossProverbs = [
   "The best fisherman sometimes comes home empty-handed."
 ];
 
+/** ==================== FOOD SYMBOLS ==================== */
 const foodSymbols = [
   { id: 1, name: "Baobab", meaning: "Baobab fruit - vitamin-rich powder for drinks, sauces, and porridges. The 'tree of life' provides food and medicine.", imageFile: "baobab.png" },
   { id: 2, name: "Bee", meaning: "Honey - natural sweetener in traditional cooking, used in teas, baked goods, and as a preservative. Symbolizes community and industry.", imageFile: "bee.png" },
@@ -425,7 +453,8 @@ const dom = {
   win: document.getElementById('win-message'),
   winText: document.getElementById('win-text'),
   shuffleCount: document.getElementById('shuffle-count'),
-  shuffleWarning: document.getElementById('shuffle-warning')
+  shuffleWarning: document.getElementById('shuffle-warning'),
+  soundBtn: document.getElementById('sound-btn')
 };
 
 const state = {
@@ -440,9 +469,82 @@ const state = {
   timerInterval: null,
   elapsed: 0,
   layout: [],
-  geom: { tileW: 70, tileH: 87, stepX: 55, stepY: 68, pad: 14, liftX: 10, liftY: 10, minX: 0, minY: 0 }
+  geom: { tileW: 70, tileH: 87, stepX: 55, stepY: 68, pad: 14, liftX: 10, liftY: 10, minX: 0, minY: 0 },
+  // accessibility focus
+  focusedTileId: null,
+  // sound/haptics
+  soundEnabled: false,
+  audioCtx: null,
+  reducedMotion: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 };
 
+/** ==================== AUDIO (WebAudio, no external files) ==================== */
+function ensureAudio(){
+  if(!state.soundEnabled) return null;
+  if(!state.audioCtx){
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if(!Ctx) return null;
+    state.audioCtx = new Ctx();
+  }
+  if(state.audioCtx.state === 'suspended'){
+    state.audioCtx.resume().catch(() => {});
+  }
+  return state.audioCtx;
+}
+
+function playTone({ type='sine', freq=440, durationMs=70, gain=0.06, attackMs=5, releaseMs=30 }){
+  const ctx = ensureAudio();
+  if(!ctx) return;
+
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = type;
+  o.frequency.value = freq;
+
+  const now = ctx.currentTime;
+  const dur = durationMs / 1000;
+
+  g.gain.setValueAtTime(0.0001, now);
+  g.gain.linearRampToValueAtTime(gain, now + attackMs/1000);
+  g.gain.linearRampToValueAtTime(0.0001, now + dur + releaseMs/1000);
+
+  o.connect(g);
+  g.connect(ctx.destination);
+
+  o.start(now);
+  o.stop(now + dur + releaseMs/1000);
+}
+
+function soundClick(){
+  playTone({ type:'sine', freq: 520, durationMs: 35, gain: 0.045, attackMs: 2, releaseMs: 18 });
+  vibrate(10);
+}
+
+function soundMatch(){
+  playTone({ type:'sine', freq: 660, durationMs: 70, gain: 0.06, attackMs: 3, releaseMs: 30 });
+  setTimeout(() => playTone({ type:'sine', freq: 880, durationMs: 90, gain: 0.055, attackMs: 3, releaseMs: 40 }), 65);
+  vibrate(25);
+}
+
+function soundWrong(){
+  playTone({ type:'sawtooth', freq: 110, durationMs: 90, gain: 0.055, attackMs: 2, releaseMs: 40 });
+  setTimeout(() => playTone({ type:'sawtooth', freq: 95, durationMs: 90, gain: 0.05, attackMs: 2, releaseMs: 40 }), 55);
+  vibrate(40);
+}
+
+function vibrate(ms){
+  if(!state.soundEnabled) return;
+  if(typeof navigator !== 'undefined' && navigator.vibrate){
+    navigator.vibrate(ms);
+  }
+}
+
+function updateSoundButton(){
+  dom.soundBtn.setAttribute('aria-pressed', String(state.soundEnabled));
+  dom.soundBtn.textContent = state.soundEnabled ? '🔊 Sound: On' : '🔇 Sound: Off';
+}
+
+/** ==================== UTIL ==================== */
 function shuffleInPlace(arr){
   for(let i=arr.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
@@ -450,13 +552,14 @@ function shuffleInPlace(arr){
   }
 }
 function kpos(p){ return `${p.l}:${p.gx}:${p.gy}`; }
-function kcol(p){ return `${p.gx}:${p.gy}`; }
 
 function showMsg(text){
   const existing=document.querySelector('.proverb-message');
   if(existing) existing.remove();
   const div=document.createElement('div');
   div.className='proverb-message';
+  div.setAttribute('role', 'status');
+  div.setAttribute('aria-live', 'polite');
   div.textContent=text;
   document.body.appendChild(div);
   setTimeout(()=>{ if(div.parentNode) div.remove(); }, 3200);
@@ -467,6 +570,7 @@ function showInfo(sym){
   dom.meaning.textContent = sym.meaning;
 }
 
+/** ==================== LAYOUT / WINNABLE ==================== */
 function buildLayout64(){
   const layout = [];
   for(let gy=0; gy<4; gy++) for(let gx=0; gx<8; gx++) layout.push({ l:1, gx, gy });      // 32
@@ -504,7 +608,7 @@ function generateWinnable(){
   shuffleInPlace(symbols);
 
   const assigned = new Map();
-  const columnSymbol = new Map();
+  const columnSymbol = new Map(); // gx:gy -> symbolId (prevents identical stacked)
 
   let idx=0;
   let guard=0;
@@ -563,13 +667,19 @@ function generateWinnable(){
     symbol: assigned.get(kpos(pos)),
     matched: false,
     selected: false,
-    free: false
+    free: false,
+    // screen coords for keyboard navigation (set during render)
+    screenX: 0,
+    screenY: 0
   }));
 
   state.matches = 0;
   state.remaining = 64;
   state.totalTiles = 64;
   state.selectedId = null;
+
+  // initial focus goes to any free tile after updateFree()
+  state.focusedTileId = null;
 }
 
 function computeGeometry(){
@@ -598,12 +708,29 @@ function updateFree(){
   const occ = new Set();
   for(const t of state.tiles) if(!t.matched) occ.add(kpos(t.pos));
   const freeKeys = computeFreeSet(occ);
+
   for(const t of state.tiles){
     if(t.matched){ t.free=false; continue; }
     t.free = freeKeys.has(kpos(t.pos));
   }
+
   const active = state.tiles.filter(t=>!t.matched);
   if(active.length <= 4) for(const t of active) t.free = true;
+
+  // Ensure we always have a focused tile id (prefer free tiles)
+  const currentFocused = state.tiles.find(t => t.id === state.focusedTileId && !t.matched);
+  if(!currentFocused){
+    const firstFree = state.tiles.find(t => !t.matched && t.free);
+    const firstAny = state.tiles.find(t => !t.matched);
+    state.focusedTileId = (firstFree || firstAny) ? (firstFree || firstAny).id : null;
+  }
+}
+
+/** ==================== ACCESSIBLE RENDER ==================== */
+function ariaLabelForTile(t){
+  const status = t.free ? 'free' : 'blocked';
+  const layer = `layer ${t.pos.l}`;
+  return `${t.symbol.name} tile, ${status}, ${layer}. Press Enter to select.`;
 }
 
 function render(){
@@ -625,11 +752,24 @@ function render(){
     el.className = 'tile';
     el.dataset.id = String(t.id);
 
+    // Accessibility: treat tile as button
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', ariaLabelForTile(t));
+    el.setAttribute('aria-disabled', String(!t.free));
+    el.setAttribute('aria-pressed', String(!!t.selected));
+
+    // Roving tabindex: only the focused tile is tabbable
+    const isFocused = state.focusedTileId === t.id;
+    el.tabIndex = isFocused ? 0 : -1;
+
     if(t.selected) el.classList.add('selected');
     if(!t.free) el.classList.add('blocked');
 
     const x = pad + t.pos.gx*stepX + (t.pos.l-1)*liftX - minX + pad;
     const y = pad + t.pos.gy*stepY - (t.pos.l-1)*liftY - minY + pad;
+
+    t.screenX = x + tileW/2;
+    t.screenY = y + tileH/2;
 
     el.style.left = `${x}px`;
     el.style.top = `${y}px`;
@@ -646,13 +786,37 @@ function render(){
     };
     el.appendChild(img);
 
-    el.addEventListener('click', () => selectTile(t.id));
+    el.addEventListener('click', () => {
+      // user gesture can unlock audio
+      if(state.soundEnabled) ensureAudio();
+      soundClick();
+      selectTile(t.id);
+    });
+
+    el.addEventListener('focus', () => {
+      state.focusedTileId = t.id;
+      // keep aria/visual focus stable without re-render
+      updateRovingTabIndex();
+    });
+
     dom.board.appendChild(el);
   }
 
   updateButtons();
+
+  // After render, focus the currently focused tile if it exists and the user is navigating by keyboard
+  // (We won't forcibly focus on every render to avoid stealing focus.)
 }
 
+function updateRovingTabIndex(){
+  const tiles = dom.board.querySelectorAll('.tile');
+  tiles.forEach(el => {
+    const id = Number(el.dataset.id);
+    el.tabIndex = (id === state.focusedTileId) ? 0 : -1;
+  });
+}
+
+/** ==================== MATCH FINDING ==================== */
 function findMatches(){
   const free = state.tiles.filter(t=>!t.matched && t.free);
   const map = new Map();
@@ -667,6 +831,7 @@ function findMatches(){
   return pairs;
 }
 
+/** ==================== GAMEPLAY ==================== */
 function selectTile(id){
   const t = state.tiles.find(x=>x.id===id);
   if(!t || t.matched || !t.free) return;
@@ -677,6 +842,7 @@ function selectTile(id){
     state.selectedId=t.id;
     showInfo(t.symbol);
     render();
+    focusTile(state.focusedTileId ?? t.id);
     return;
   }
 
@@ -684,6 +850,7 @@ function selectTile(id){
     t.selected=false;
     state.selectedId=null;
     render();
+    focusTile(t.id);
     return;
   }
 
@@ -696,35 +863,145 @@ function selectTile(id){
     state.selectedId=null;
     state.matches += 1;
     state.remaining -= 2;
+
+    soundMatch();
+
     updateFree();
     updateStats();
     render();
+
+    // keep focus on a free tile after changes
+    focusTile(state.focusedTileId);
+
     if(state.remaining===0) win();
     else showMsg("Good match!");
-  }else{
+  } else {
+    // wrong match feedback
+    soundWrong();
+
     first.selected=true; t.selected=true;
     render();
-    const el1 = document.querySelector(`.tile[data-id="${first.id}"]`);
-    const el2 = document.querySelector(`.tile[data-id="${t.id}"]`);
-    if(el1) el1.classList.add('wrong-match');
-    if(el2) el2.classList.add('wrong-match');
+
+    if(!state.reducedMotion){
+      const el1 = document.querySelector(`.tile[data-id="${first.id}"]`);
+      const el2 = document.querySelector(`.tile[data-id="${t.id}"]`);
+      if(el1) el1.classList.add('wrong-match');
+      if(el2) el2.classList.add('wrong-match');
+    }
+
     setTimeout(()=>{
       first.selected=false; t.selected=false;
       state.selectedId=null;
       render();
+      focusTile(t.id);
       showMsg(lossProverbs[Math.floor(Math.random()*lossProverbs.length)]);
     }, 420);
   }
 }
 
+function focusTile(tileId){
+  if(tileId === null || tileId === undefined) return;
+  state.focusedTileId = tileId;
+  updateRovingTabIndex();
+  const el = dom.board.querySelector(`.tile[data-id="${tileId}"]`);
+  if(el) el.focus({ preventScroll: true });
+}
+
+/** ==================== KEYBOARD NAVIGATION ==================== */
+function getFocusableTiles(){
+  return state.tiles.filter(t => !t.matched); // can focus blocked too, but selection requires free
+}
+
+function findNearestInDirection(fromTile, dir){
+  const tiles = getFocusableTiles().filter(t => t.id !== fromTile.id);
+
+  // Directional filter + score by angle/primary axis distance
+  const fx = fromTile.screenX;
+  const fy = fromTile.screenY;
+
+  let best = null;
+  let bestScore = Infinity;
+
+  for(const t of tiles){
+    const dx = t.screenX - fx;
+    const dy = t.screenY - fy;
+
+    // must be in intended half-plane
+    if(dir === 'left' && dx >= 0) continue;
+    if(dir === 'right' && dx <= 0) continue;
+    if(dir === 'up' && dy >= 0) continue;
+    if(dir === 'down' && dy <= 0) continue;
+
+    const primary = (dir === 'left' || dir === 'right') ? Math.abs(dx) : Math.abs(dy);
+    const secondary = (dir === 'left' || dir === 'right') ? Math.abs(dy) : Math.abs(dx);
+
+    // Favor closest in primary axis, penalize drift
+    const score = primary + secondary * 0.35;
+
+    if(score < bestScore){
+      bestScore = score;
+      best = t;
+    }
+  }
+
+  return best;
+}
+
+function onBoardKeyDown(e){
+  const key = e.key;
+  const focusId = state.focusedTileId;
+
+  const current = state.tiles.find(t => t.id === focusId && !t.matched);
+  if(!current) return;
+
+  if(key === 'ArrowLeft' || key === 'ArrowRight' || key === 'ArrowUp' || key === 'ArrowDown'){
+    e.preventDefault();
+    const dir = (key === 'ArrowLeft') ? 'left'
+      : (key === 'ArrowRight') ? 'right'
+      : (key === 'ArrowUp') ? 'up'
+      : 'down';
+
+    const next = findNearestInDirection(current, dir);
+    if(next){
+      state.focusedTileId = next.id;
+      focusTile(next.id);
+    }
+    return;
+  }
+
+  if(key === 'Enter' || key === ' '){
+    e.preventDefault();
+    if(state.soundEnabled) ensureAudio();
+    soundClick();
+    selectTile(current.id);
+  }
+}
+
+// Attach one keydown handler on the document so it works reliably
+document.addEventListener('keydown', (e) => {
+  // Ignore if a dialog is open
+  if(!dom.win.classList.contains('hidden')) return;
+
+  // Only act if focus is within the board tiles (or no focus but we have a focusedTileId)
+  const active = document.activeElement;
+  const isTile = active && active.classList && active.classList.contains('tile');
+  const isInBoard = isTile || (state.focusedTileId !== null);
+  if(!isInBoard) return;
+
+  onBoardKeyDown(e);
+});
+
+/** ==================== UI ACTIONS ==================== */
 function hint(){
   const m = findMatches();
   if(!m.length) return;
   const [a,b] = m[0];
+
   a.selected=true; b.selected=true;
   showInfo(a.symbol);
   render();
-  setTimeout(()=>{ a.selected=false; b.selected=false; render(); }, 1600);
+
+  setTimeout(()=>{ a.selected=false; b.selected=false; render(); focusTile(state.focusedTileId); }, 1600);
 }
 
 function shuffleSymbols(force=false){
@@ -747,6 +1024,7 @@ function shuffleSymbols(force=false){
 
   updateFree();
   render();
+  focusTile(state.focusedTileId);
   showMsg("Ingredients stirred and rearranged!");
 }
 
@@ -811,16 +1089,38 @@ function init(){
   startTimer();
   render();
   showInfo({name:"Select a tile", meaning:"Click any ingredient to learn about its place in African cooking"});
+  focusTile(state.focusedTileId);
 }
 
-dom.hint.addEventListener('click', hint);
-dom.shuffle.addEventListener('click', ()=>shuffleSymbols(false));
-dom.reset.addEventListener('click', reset);
-dom.next.addEventListener('click', nextLevel);
-dom.again.addEventListener('click', reset);
+/** ==================== EVENTS ==================== */
+dom.hint.addEventListener('click', () => { if(state.soundEnabled) ensureAudio(); hint(); });
+dom.shuffle.addEventListener('click', () => { if(state.soundEnabled) ensureAudio(); shuffleSymbols(false); });
+dom.reset.addEventListener('click', () => { if(state.soundEnabled) ensureAudio(); reset(); });
+dom.next.addEventListener('click', () => { if(state.soundEnabled) ensureAudio(); nextLevel(); });
+dom.again.addEventListener('click', () => { if(state.soundEnabled) ensureAudio(); reset(); });
 
-window.addEventListener('DOMContentLoaded', init);
-window.addEventListener('resize', () => render());
+dom.soundBtn.addEventListener('click', () => {
+  state.soundEnabled = !state.soundEnabled;
+  updateSoundButton();
+  if(state.soundEnabled){
+    ensureAudio();
+    soundClick();
+    showMsg("Sound on.");
+  }else{
+    showMsg("Sound off.");
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  updateSoundButton();
+  init();
+});
+
+window.addEventListener('resize', () => {
+  render();
+  // keep focus stable
+  focusTile(state.focusedTileId);
+});
 </script>
 </body>
 </html>
