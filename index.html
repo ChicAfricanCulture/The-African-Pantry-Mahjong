@@ -511,29 +511,44 @@ function initGame() {
 function createTiles() {
     gameState.tiles = [];
     
-    // Use all 32 symbols, duplicate to reach 72 tiles (each symbol appears 2-3 times)
+    // We need 72 tiles total
     const tilesNeeded = 72;
-    const symbolCount = foodSymbols.length;
+    const symbolCount = foodSymbols.length; // 32 symbols
     
     // Create array of symbols with proper pairs
     let symbolPool = [];
     
-    // Each symbol should appear 2 or 4 times (even numbers for matching)
+    // First, add each symbol twice (64 tiles)
     for (let i = 0; i < symbolCount; i++) {
-        // Add each symbol either 2 or 4 times
-        const copies = i < 8 ? 4 : 2; // First 8 symbols appear 4 times, rest appear twice
-        for (let j = 0; j < copies; j++) {
-            symbolPool.push(foodSymbols[i]);
-        }
+        symbolPool.push(foodSymbols[i]); // First copy
+        symbolPool.push(foodSymbols[i]); // Second copy
     }
     
-    // Shuffle the symbol pool
+    // We have 64 tiles now, need 8 more (4 more pairs)
+    // Add 4 symbols again (making them appear 4 times total)
+    const extraSymbols = [0, 8, 16, 24]; // Use symbols at these indices for variety
+    extraSymbols.forEach(index => {
+        symbolPool.push(foodSymbols[index]);
+        symbolPool.push(foodSymbols[index]);
+    });
+    
+    // Now we have 72 tiles (64 + 8)
+    console.log("Total symbols in pool:", symbolPool.length);
+    
+    // Count occurrences to verify all symbols appear
+    const counts = {};
+    symbolPool.forEach(s => {
+        counts[s.name] = (counts[s.name] || 0) + 1;
+    });
+    console.log("Symbol counts:", counts);
+    
+    // Shuffle the symbol pool thoroughly
     for (let i = symbolPool.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [symbolPool[i], symbolPool[j]] = [symbolPool[j], symbolPool[i]];
     }
     
-    // Generate pyramid positions (8 columns, variable rows per level)
+    // Generate pyramid positions
     const positions = generatePyramidPositions(tilesNeeded);
     
     // Create tiles
@@ -549,8 +564,11 @@ function createTiles() {
             free: false
         });
     }
+    
+    // Verify we have all symbols
+    const symbolsInGame = new Set(gameState.tiles.map(t => t.symbol.name));
+    console.log("Symbols in game:", symbolsInGame.size, "out of", symbolCount);
 }
-
 // Generate pyramid-style positions with real stacking
 function generatePyramidPositions(totalTiles) {
     const positions = [];
