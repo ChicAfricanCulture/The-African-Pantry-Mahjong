@@ -633,9 +633,9 @@ function updateFreeTiles() {
             
             // If other tile is on a higher level and overlaps this tile, this tile is blocked
             if (other.level > tile.level) {
-                // Check if other tile overlaps this one
-                const overlapX = Math.abs(tile.x - other.x) < 65;
-                const overlapY = Math.abs(tile.y - other.y) < 80;
+           // Check if other tile overlaps this one - stricter detection
+const overlapX = Math.abs(tile.x - other.x) < 60; // Reduced from 65
+const overlapY = Math.abs(tile.y - other.y) < 75; // Reduced from 80
                 
                 if (overlapX && overlapY) {
                     tile.free = false;
