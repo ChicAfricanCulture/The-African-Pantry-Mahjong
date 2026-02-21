@@ -545,6 +545,31 @@ function updateFreeTiles() {
             tile.free = false;
         }
     });
+    
+    // NEW: Auto-shuffle when game becomes unwinnable
+    checkAndFixUnwinnable();
+}// NEW FUNCTION: Check for unwinnable state and auto-shuffle
+function checkAndFixUnwinnable() {
+    const activeTiles = gameState.tiles.filter(t => !t.matched);
+    const freeTiles = activeTiles.filter(t => t.free);
+    
+    // If less than 2 free tiles, game is stuck
+    if (freeTiles.length < 2) {
+        setTimeout(() => {
+            showProverbMessage("The pot needs stirring... Auto-shuffling!");
+            shuffleTiles();
+        }, 500);
+        return;
+    }
+    
+    // Check if any matches exist among free tiles
+    const matches = findAvailableMatches();
+    if (matches.length === 0 && activeTiles.length > 0) {
+        setTimeout(() => {
+            showProverbMessage("No matches available. Stirring the pot...");
+            shuffleTiles();
+        }, 500);
+    }
 }
 
 // Render the game board with stacked tiles
@@ -701,7 +726,7 @@ function provideHint() {
     }
 }
 
-// Find available matches
+// Replace the existing findAvailableMatches with this version
 function findAvailableMatches() {
     const matches = [];
     const freeTiles = gameState.tiles.filter(tile => !tile.matched && tile.free);
@@ -713,7 +738,6 @@ function findAvailableMatches() {
             }
         }
     }
-    
     return matches;
 }
 
