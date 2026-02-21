@@ -93,7 +93,7 @@
         
         .stats {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             background: rgba(26, 42, 58, 0.6);
             padding: 15px;
@@ -206,20 +206,22 @@
         }
         
         .tile.blocked {
-            opacity: 0.5;
-            filter: brightness(0.7);
-            cursor: not-allowed;
+            opacity: 0.6;
+            filter: saturate(0.5);
+            cursor: not-allowed !important;
+            pointer-events: none;
         }
         
         .tile.wrong-match {
-            animation: shake 0.4s ease-in-out;
-            border-color: #ff4444;
+            animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+            border-color: #ff4444 !important;
         }
         
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-5px); }
-            40%, 80% { transform: translateX(5px); }
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+            40%, 60% { transform: translate3d(8px, 0, 0); }
         }
         
         .tile img {
@@ -233,7 +235,6 @@
         .tile.level-2 { z-index: 20; }
         .tile.level-3 { z-index: 30; }
         .tile.level-4 { z-index: 40; }
-        .tile.level-5 { z-index: 50; }
         
         .proverb-message {
             position: fixed;
@@ -316,13 +317,6 @@
             display: none;
         }
         
-        .shuffle-count {
-            font-size: 0.9rem;
-            color: #f9a826;
-            text-align: center;
-            margin-top: 5px;
-        }
-        
         @media (max-width: 1200px) {
             .tile {
                 width: 60px;
@@ -354,7 +348,7 @@
         <div class="game-area">
             <div class="board-container">
                 <div class="level-indicator">
-                    <div class="level-text">Level: <span id="level">1</span> | Tiles: <span id="total-tiles">72</span></div>
+                    <div class="level-text">Level: <span id="level">1</span> | Tiles: <span id="total-tiles">64</span></div>
                 </div>
                 <div class="mahjong-board" id="board"></div>
             </div>
@@ -366,12 +360,16 @@
                         <div class="stat-label">Matches</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-value" id="remaining">72</div>
+                        <div class="stat-value" id="remaining">64</div>
                         <div class="stat-label">Remaining</div>
                     </div>
                     <div class="stat">
                         <div class="stat-value" id="time">00:00</div>
                         <div class="stat-label">Time</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="shuffle-count">3</div>
+                        <div class="stat-label">Shuffles</div>
                     </div>
                 </div>
                 
@@ -385,7 +383,6 @@
                     <button id="shuffle-btn">🔄 Shuffle</button>
                     <button id="reset-btn">🆕 New Game</button>
                 </div>
-                <div class="shuffle-count" id="shuffle-count">Shuffles remaining: 3</div>
             </div>
         </div>
     </div>
@@ -467,7 +464,7 @@ let gameState = {
     timerInterval: null,
     elapsedTime: 0,
     level: 1,
-    totalTiles: 72,
+    totalTiles: 64,
     lastMoveTime: null,
     stuckTimer: null,
     proverbShown: false,
@@ -511,36 +508,18 @@ function initGame() {
 function createTiles() {
     gameState.tiles = [];
     
-    // We need 72 tiles total
-    const tilesNeeded = 72;
+    // 64 tiles exactly - fits pyramid perfectly
+    const tilesNeeded = 64;
     const symbolCount = foodSymbols.length; // 32 symbols
     
-    // Create array of symbols with proper pairs
+    // Create array of symbols - each symbol appears exactly twice
     let symbolPool = [];
-    
-    // First, add each symbol twice (64 tiles)
     for (let i = 0; i < symbolCount; i++) {
         symbolPool.push(foodSymbols[i]); // First copy
         symbolPool.push(foodSymbols[i]); // Second copy
     }
     
-    // We have 64 tiles now, need 8 more (4 more pairs)
-    // Add 4 symbols again (making them appear 4 times total)
-    const extraSymbols = [0, 8, 16, 24]; // Use symbols at these indices for variety
-    extraSymbols.forEach(index => {
-        symbolPool.push(foodSymbols[index]);
-        symbolPool.push(foodSymbols[index]);
-    });
-    
-    // Now we have 72 tiles (64 + 8)
     console.log("Total symbols in pool:", symbolPool.length);
-    
-    // Count occurrences to verify all symbols appear
-    const counts = {};
-    symbolPool.forEach(s => {
-        counts[s.name] = (counts[s.name] || 0) + 1;
-    });
-    console.log("Symbol counts:", counts);
     
     // Shuffle the symbol pool thoroughly
     for (let i = symbolPool.length - 1; i > 0; i--) {
@@ -565,56 +544,78 @@ function createTiles() {
         });
     }
     
-    // Verify we have all symbols
-    const symbolsInGame = new Set(gameState.tiles.map(t => t.symbol.name));
-    console.log("Symbols in game:", symbolsInGame.size, "out of", symbolCount);
+    // Ensure game is solvable
+    updateFreeTiles();
+    let attempts = 0;
+    while (findAvailableMatches().length === 0 && attempts < 50) {
+        const symbols = gameState.tiles.map(t => t.symbol);
+        for (let k = symbols.length - 1; k > 0; k--) {
+            const j = Math.floor(Math.random() * (k + 1));
+            [symbols[k], symbols[j]] = [symbols[j], symbols[k]];
+        }
+        gameState.tiles.forEach((t, i) => { t.symbol = symbols[i]; });
+        updateFreeTiles();
+        attempts++;
+    }
+    console.log(`Solvability shuffles: ${attempts}`);
+    
+    gameState.matches = 0;
+    gameState.remaining = tilesNeeded;
+    gameState.totalTiles = tilesNeeded;
 }
-// Generate pyramid-style positions with real stacking
+
+// Generate pyramid positions with proper stacking
 function generatePyramidPositions(totalTiles) {
     const positions = [];
-    const cols = 8;
-    const tileWidth = 75; // Width + gap
-    const tileHeight = 95; // Height + gap
-    
-    // Create 4 levels with increasing offsets to create real stacking
+    const columns = 8;
+    const rowStep = 95; // Height + gap
+    const tileWidth = 85;
+
     const levelConfigs = [
-        { rows: 3, yOffset: 0, xOffset: 15 }, // Bottom level - fully visible
-        { rows: 3, yOffset: 25, xOffset: 10 }, // Second level - covers bottom
-        { rows: 2, yOffset: 45, xOffset: 5 },  // Third level - covers second
-        { rows: 1, yOffset: 65, xOffset: 0 }   // Top level - covers third
+        { rows: 3, yOffset: 0, xOffset: 15 },   // Bottom level (level 1) - widest
+        { rows: 3, yOffset: 25, xOffset: 10 },  // Level 2
+        { rows: 2, yOffset: 45, xOffset: 5 },   // Level 3
+        { rows: 1, yOffset: 65, xOffset: 0 }    // Top level (level 4) - narrowest
     ];
-    
+
     let tileIndex = 0;
-    
-    // Generate from bottom to top (level 4 = bottom, level 1 = top)
+
+    // Fill from bottom to top
     for (let level = 0; level < levelConfigs.length; level++) {
         const config = levelConfigs[level];
-        const levelNumber = levelConfigs.length - level; // 4,3,2,1
-        
+        const levelNumber = level + 1; // Bottom=1 (behind), top=4 (front)
+
         for (let row = 0; row < config.rows; row++) {
-            // Calculate how many tiles in this row (pyramid shape)
-            let tilesInRow = cols;
-            if (level === 2) tilesInRow = 6; // Third level has fewer tiles
-            if (level === 3) tilesInRow = 4; // Top level has even fewer
-            
-            const startCol = Math.floor((cols - tilesInRow) / 2);
-            
+            let tilesInRow = columns;
+            if (level === 2) tilesInRow = 6;  // Level 3 narrower
+            if (level === 3) tilesInRow = 4;  // Top level narrowest
+
+            const startCol = Math.floor((columns - tilesInRow) / 2);
+
             for (let col = 0; col < tilesInRow; col++) {
                 if (tileIndex >= totalTiles) break;
-                
+
                 positions.push({
                     x: (startCol + col) * tileWidth + config.xOffset,
-                    y: row * tileHeight + config.yOffset,
+                    y: row * rowStep + config.yOffset,
                     level: levelNumber
                 });
-                
+
                 tileIndex++;
             }
             if (tileIndex >= totalTiles) break;
         }
         if (tileIndex >= totalTiles) break;
     }
-    
+
+    // Flip Y to orient pyramid correctly (narrow at top, wide at bottom)
+    const ys = positions.map(p => p.y);
+    const maxY = Math.max(...ys);
+    positions.forEach(p => {
+        p.y = 20 + (maxY - p.y); // Flip + top padding
+    });
+
+    console.log(`Generated ${positions.length} positions`);
     return positions;
 }
 
@@ -633,8 +634,8 @@ function updateFreeTiles() {
             // If other tile is on a higher level and overlaps this tile, this tile is blocked
             if (other.level > tile.level) {
                 // Check if other tile overlaps this one
-                const overlapX = Math.abs(tile.x - other.x) < 65; // 65px overlap threshold
-                const overlapY = Math.abs(tile.y - other.y) < 80; // 80px overlap threshold
+                const overlapX = Math.abs(tile.x - other.x) < 65;
+                const overlapY = Math.abs(tile.y - other.y) < 80;
                 
                 if (overlapX && overlapY) {
                     tile.free = false;
@@ -652,19 +653,16 @@ function checkUnwinnable() {
     const activeTiles = gameState.tiles.filter(t => !t.matched);
     const freeTiles = activeTiles.filter(t => t.free);
     
-    // If no free tiles but game not finished, something's wrong
     if (freeTiles.length === 0 && activeTiles.length > 0) {
         setTimeout(() => {
             showProverbMessage("The pot is stuck! Auto-shuffling...");
-            shuffleTiles(true); // Force shuffle without using a shuffle count
+            shuffleTiles(true);
         }, 500);
         return;
     }
     
-    // Check for available matches among free tiles
     const matches = findAvailableMatches();
     if (matches.length === 0 && activeTiles.length > 0) {
-        // No matches available, but we have free tiles - unwinnable
         setTimeout(() => {
             if (gameState.shufflesRemaining > 0) {
                 showProverbMessage("No matches available. Stirring the pot...");
@@ -735,17 +733,13 @@ function renderBoard() {
 
 // Handle tile selection
 function selectTile(tile) {
-    // Can't select matched or blocked tiles
     if (tile.matched || !tile.free) return;
     
     gameState.lastMoveTime = new Date();
     gameState.proverbShown = false;
     
-    // If no tile is selected, select this one
     if (!gameState.selectedTile) {
-        // Deselect any previously selected tile
         gameState.tiles.forEach(t => t.selected = false);
-        
         tile.selected = true;
         gameState.selectedTile = tile;
         showSymbolInfo(tile.symbol);
@@ -753,7 +747,6 @@ function selectTile(tile) {
         return;
     }
     
-    // If we have a selected tile and it's the same tile, deselect it
     if (gameState.selectedTile.id === tile.id) {
         gameState.selectedTile.selected = false;
         gameState.selectedTile = null;
@@ -761,49 +754,54 @@ function selectTile(tile) {
         return;
     }
     
-    // We have two different tiles - check if they match
     if (gameState.selectedTile.symbol.id === tile.symbol.id) {
-        // Match found!
         gameState.selectedTile.matched = true;
         tile.matched = true;
         gameState.matches++;
         gameState.remaining -= 2;
         
-        // Clear selection
         gameState.selectedTile.selected = false;
         gameState.selectedTile = null;
         
-        // Update free tiles and render
         updateFreeTiles();
         renderBoard();
         updateStats();
         
-        // Check if level complete
         if (gameState.remaining === 0) {
             endLevel();
         }
     } else {
-        // Wrong match - show error animation
         showWrongMatch(tile);
-        
-        // Deselect previous tile
-        gameState.selectedTile.selected = false;
-        gameState.selectedTile = null;
-        renderBoard();
     }
 }
 
 // Show wrong match animation
 function showWrongMatch(tile) {
-    const tileElements = document.querySelectorAll('.tile');
-    tileElements.forEach(el => {
-        if (el.dataset.id == tile.id || (gameState.selectedTile && el.dataset.id == gameState.selectedTile.id)) {
-            el.classList.add('wrong-match');
-            setTimeout(() => {
-                el.classList.remove('wrong-match');
-            }, 400);
-        }
-    });
+    // Store the selected tile
+    const firstTile = gameState.selectedTile;
+    
+    // Show both as selected briefly
+    firstTile.selected = true;
+    tile.selected = true;
+    renderBoard();
+    
+    setTimeout(() => {
+        const firstEl = document.querySelector(`.tile[data-id="${firstTile.id}"]`);
+        const secondEl = document.querySelector(`.tile[data-id="${tile.id}"]`);
+        
+        if (firstEl) firstEl.classList.add('wrong-match');
+        if (secondEl) secondEl.classList.add('wrong-match');
+        
+        setTimeout(() => {
+            if (firstEl) firstEl.classList.remove('wrong-match');
+            if (secondEl) secondEl.classList.remove('wrong-match');
+            
+            firstTile.selected = false;
+            tile.selected = false;
+            gameState.selectedTile = null;
+            renderBoard();
+        }, 400);
+    }, 100);
 }
 
 // Start stuck detection
@@ -828,7 +826,6 @@ function showEncouragingProverb() {
 
 // Show proverb message
 function showProverbMessage(proverb) {
-    // Remove any existing proverb messages
     const existing = document.querySelector('.proverb-message');
     if (existing) existing.remove();
     
@@ -857,11 +854,14 @@ function updateStats() {
     remainingElement.textContent = gameState.remaining;
     levelElement.textContent = gameState.level;
     totalTilesElement.textContent = gameState.totalTiles;
+    updateShuffleCount();
 }
 
 // Update shuffle count display
 function updateShuffleCount() {
-    shuffleCountElement.textContent = `Shuffles remaining: ${gameState.shufflesRemaining}`;
+    if (shuffleCountElement) {
+        shuffleCountElement.textContent = gameState.shufflesRemaining;
+    }
 }
 
 // Start the game timer
@@ -883,66 +883,49 @@ function provideHint() {
     const availableMatches = findAvailableMatches();
     if (availableMatches.length > 0) {
         const match = availableMatches[0];
-        highlightTiles([match[0], match[1]]);
+        match[0].selected = true;
+        match[1].selected = true;
+        renderBoard();
+        
+        setTimeout(() => {
+            match[0].selected = false;
+            match[1].selected = false;
+            renderBoard();
+        }, 2000);
     } else {
         showProverbMessage(lossProverbs[Math.floor(Math.random() * lossProverbs.length)]);
     }
 }
 
-// Highlight tiles for hint
-function highlightTiles(tiles) {
-    // Temporarily select them
-    tiles.forEach(tile => {
-        tile.selected = true;
-    });
-    
-    renderBoard();
-    
-    // Deselect after 2 seconds
-    setTimeout(() => {
-        tiles.forEach(tile => {
-            tile.selected = false;
-        });
-        renderBoard();
-    }, 2000);
-}
-
 // Shuffle tiles
 function shuffleTiles(force = false) {
-    // Check if we have shuffles left (unless forced)
     if (!force && gameState.shufflesRemaining <= 0) {
         showProverbMessage("No shuffles left! Try a new game.");
         return;
     }
     
-    // Decrement shuffle count
     if (!force) {
         gameState.shufflesRemaining--;
         updateShuffleCount();
     }
     
-    // Clear any selected tile
     if (gameState.selectedTile) {
         gameState.selectedTile.selected = false;
         gameState.selectedTile = null;
     }
     
-    // Get unmatched tiles
     const unmatchedTiles = gameState.tiles.filter(tile => !tile.matched);
-    
-    // Shuffle their symbols
     const symbols = unmatchedTiles.map(tile => tile.symbol);
+    
     for (let i = symbols.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [symbols[i], symbols[j]] = [symbols[j], symbols[i]];
     }
     
-    // Reassign symbols
     unmatchedTiles.forEach((tile, index) => {
         tile.symbol = symbols[index];
     });
     
-    // Update free tiles and render
     updateFreeTiles();
     renderBoard();
     
@@ -972,7 +955,6 @@ function endLevel() {
     clearInterval(gameState.timerInterval);
     clearInterval(gameState.stuckTimer);
     
-    // Show appropriate message
     if (gameState.level === 1) {
         winText.textContent = `🎉 Level ${gameState.level} Complete! Ready for more challenging layouts?`;
     } else {
