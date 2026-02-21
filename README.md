@@ -1,6 +1,6 @@
 <body>
 <div class="container">
-<h1>The African Pantry Mahjong</h1>
+<h1>The African Pantry Mahjongwwwwwwww</h1>
 <p>A cultural matching game exploring the ingredients and foodways of Africa through play.</p>
 <a href="https://chicafricanculture.github.io/african-foodways-data/" class="play-button">PLAY THE GAME</a>
 <hr>
