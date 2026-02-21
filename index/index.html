@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — The African Pantry Mahjong</title><link rel="icon" type="image/png" href="images/pot.png">
+<style>
+body{margin:0;padding:20px;background:#0d1b2a;color:#e0e0e0;font-family:system-ui,sans-serif;line-height:1.5;}
+.container{max-width:800px;margin:0 auto;background:#0d1b2a;padding:20px;}
+h1{color:#f9a826;font-weight:400;font-size:2rem;margin:0 0 10px 0;}
+h2{color:#f9a826;font-weight:400;font-size:1.4rem;margin:25px 0 10px 0;}
+p{margin:0 0 15px 0;color:#cbd5e0;}
+a{color:#f9a826;text-decoration:none;border-bottom:1px dotted #f9a826;}
+.play-button{display:inline-block;color:#f9a826;border:1px solid #f9a826;padding:8px 24px;margin:5px 0 20px 0;text-decoration:none;}
+.play-button:hover{background:#f9a826;color:#0d1b2a;}
+.ingredients-list{display:grid;grid-template-columns:repeat(2,1fr);gap:5px 20px;margin:10px 0 20px 0;}
+.ingredient-item{color:#cbd5e0;font-size:0.9rem;border-bottom:1px dotted #2a3a4a;padding:4px 0;}
+.ingredient-name{color:#d4af7a;}
+.ingredient-note{color:#8f9eb0;font-size:0.8rem;float:right;}
+.proverb{font-style:italic;color:#b8c7d6;text-align:center;margin:30px 0;padding:15px;border-top:1px solid #2a3a4a;border-bottom:1px solid #2a3a4a;}
+.how-to-play{background:#1a2a3a;padding:15px;margin:15px 0;border-left:3px solid #f9a826;}
+.how-to-play ol{margin:0 0 0 20px;color:#cbd5e0;}
+.how-to-play li{margin:5px 0;}
+.feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:15px 0;}
+.feature-item{background:#1a2a3a;padding:10px;color:#cbd5e0;font-size:0.9rem;}
+.footer{margin-top:30px;padding-top:15px;border-top:1px solid #2a3a4a;text-align:center;color:#7f8fa0;font-size:0.8rem;}
+.tagline{font-size:1.2rem;color:#d4af7a;text-align:center;margin:25px 0 5px 0;font-weight:300;}
+.sub-tagline{text-align:center;color:#7f8fa0;font-size:0.8rem;text-transform:uppercase;}
+hr{border:none;border-top:1px solid #2a3a4a;margin:20px 0;}
+</style>
+</head>
+<body>
+<div class="container"><h1>The African Pantry Mahjong</h1>
+<p class="subtitle">Match ingredients, discover recipes, and explore African foodways.</p>
+<a href="https://chicafricanculture.github.io/african-foodways-data/" class="play-button">PLAY THE GAME</a>
+<hr>
+<h2>About</h2>
+<p>The African Pantry Mahjong transforms classic tile-matching into a journey through African cuisine. Each tile features a black-and-white icon of a real ingredient. Every matched pair reveals a traditional recipe, cultural fact, or cooking wisdom.</p>
+<div class="proverb">"The one who eats alone cannot discuss the taste of the food with others."</div>
+<h2>Ingredients</h2>
+<p>Twenty-two ingredients from across the continent's culinary traditions.</p>
+<div class="ingredients-list">
+<div class="ingredient-item"><span class="ingredient-name">Goat</span> <span class="ingredient-note">pepper soup</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Cow</span> <span class="ingredient-note">suya, stews</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Crab</span> <span class="ingredient-note">coastal soups</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Egg</span> <span class="ingredient-note">egg stew</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Fire</span> <span class="ingredient-note">cooking method</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Fish</span> <span class="ingredient-note">tilapia</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Fishing</span> <span class="ingredient-note">communities</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Maggi</span> <span class="ingredient-note">seasoning</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Mortar</span> <span class="ingredient-note">pounding</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Palm Oil</span> <span class="ingredient-note">banga soup</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Pepper</span> <span class="ingredient-note">scotch bonnet</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Pot</span> <span class="ingredient-note">one-pot meals</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Rice</span> <span class="ingredient-note">jollof</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Salt</span> <span class="ingredient-note">preservation</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Vegetables</span> <span class="ingredient-note">cassava leaves</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Water</span> <span class="ingredient-note">foundation</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Wood</span> <span class="ingredient-note">fuel</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Yam</span> <span class="ingredient-note">asaro</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Plantain</span> <span class="ingredient-note">kelewele</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Peanuts</span> <span class="ingredient-note">groundnut stew</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Beans</span> <span class="ingredient-note">gbegiri</span></div>
+<div class="ingredient-item"><span class="ingredient-name">Okra</span> <span class="ingredient-note">draw soup</span></div>
+</div>
+<div class="instructions">
+    <h2>How to Play</h2>
+    <p>Match identical ingredients to clear the board. Each match reveals a recipe or cultural fact.</p>
+    <ul>
+        <li><strong>Match Tiles:</strong> Click on two identical ingredients</li>
+        <li><strong>Stacked Tiles:</strong> Only top tiles can be selected</li>
+        <li><strong>Learn:</strong> Each ingredient shares a traditional dish</li>
+    </ul>
+</div><h2>Learning Through Play</h2>
+<p>The game is designed for knowledge to emerge naturally through play.</p>
+<div class="feature-grid">
+<div class="feature-item">Regional dishes across Africa</div>
+<div class="feature-item">Cooking techniques and traditions</div>
+<div class="feature-item">Cultural significance of ingredients</div>
+<div class="feature-item">How food connects communities</div>
+</div>
+<div class="proverb">"The firewood that cooks the food is the same one that burns the cook."</div>
+<h2>Project</h2>
+<p>Built with HTML, CSS, JavaScript. Custom black-and-white icons. Part of the African Foodways Project — documenting food traditions across Africa.</p>
+<p><a href="https://chicafricanculture.github.io/african-foodways-data/">Visit the main archive →</a></p>
+<hr>
+<div class="tagline">Match tiles. Discover tastes. Explore the pantry.</div>
+<div class="sub-tagline">The African Pantry Mahjong</div>
+<div class="footer">
+<p>© 2026 The African Foodways Project · <a href="#">MIT License</a></p>
+<p>Inspired by traditional African cooking.</p>
+</div>
+</div>
+</body>
+</html><script>
+// African food proverbs
+const proverbs = [
+    "The one who eats alone cannot discuss the taste of the food with others.",
+    "The firewood that cooks the food is the same one that burns the cook.",
+    "Soup that is too hot makes one wait before eating.",
+    "A full belly is the mother of all songs.",
+    "You cannot taste honey without burning your tongue.",
+    "The best fish smell when they are three days old.",
+    "If you want to eat a lot of food, don't wash your hands too clean.",
+    "One cannot prepare soup without water."
+];
+
+const lossProverbs = [
+    "The pot that boils too much loses its flavor.",
+    "Even the best cook sometimes burns the stew.",
+    "A bad cook blames his pots and pestle.",
+    "When the cooking pot is empty, the fire feels ashamed.",
+    "A fall is not a failure, but a failure to rise is."
+];
+
+// African food symbols with PNG files
+const foodSymbols = [
+    { id: 1, name: "Cow", meaning: "Suya, rich stews, and traditional ceremonies.", imageFile: "cow.png" },
+    { id: 2, name: "Crab", meaning: "Coastal soups and crab pepper soup.", imageFile: "crab.png" },
+    { id: 3, name: "Egg", meaning: "Ghanaian egg stew, boiled eggs in puff-puff.", imageFile: "egg.png" },
+    { id: 4, name: "Fire", meaning: "Traditional cooking methods and hearths.", imageFile: "fire.png" },
+    { id: 5, name: "Fish", meaning: "Grilled tilapia, fish pepper soups.", imageFile: "fish.png" },
+    { id: 6, name: "Fishing", meaning: "River and coastal communities.", imageFile: "fishing.png" },
+    { id: 7, name: "Goat", meaning: "Goat pepper soup, ceremonial dishes.", imageFile: "goat.png" },
+    { id: 8, name: "Maggi", meaning: "Essential seasoning in modern African cooking.", imageFile: "maggi.png" },
+    { id: 9, name: "Mortar", meaning: "Pounding fufu, grinding spices.", imageFile: "mortor.png" },
+    { id: 10, name: "Palm Oil", meaning: "Banga soup, essential for stews.", imageFile: "palm-oil.png" },
+    { id: 11, name: "Pepper", meaning: "Scotch bonnet, peri-peri, spice blends.", imageFile: "pepper.png" },
+    { id: 12, name: "Pot", meaning: "One-pot cooking, communal meals.", imageFile: "pot.png" },
+    { id: 13, name: "Rice", meaning: "Jollof, fried rice, coconut rice.", imageFile: "rice.png" },
+    { id: 14, name: "Salt", meaning: "Preservation and flavor.", imageFile: "salt.png" },
+    { id: 15, name: "Vegetables", meaning: "Cassava leaves, bitterleaf, spinach.", imageFile: "vegetables.png" },
+    { id: 16, name: "Water", meaning: "The foundation of all cooking.", imageFile: "water.png" },
+    { id: 17, name: "Wood", meaning: "Fuel for traditional cooking fires.", imageFile: "wood.png" },
+    { id: 18, name: "Yam", meaning: "Yam pottage (asaro), boiled yam with sauces.", imageFile: "yam.png" },
+    { id: 19, name: "Plantain", meaning: "Kelewele, dodo, fried plantains.", imageFile: "plantain.png" },
+    { id: 20, name: "Peanuts", meaning: "Groundnut stew (mafé), peanut sauces.", imageFile: "peanuts.png" },
+    { id: 21, name: "Beans", meaning: "Gbegiri, ewa aganyin, bean fritters.", imageFile: "beans.png" },
+    { id: 22, name: "Okra", meaning: "Okra soup, draw soup, thickener for stews.", imageFile: "okra.png" }
+];
+
+// Game state
+let gameState = {
+    tiles: [],
+    selectedTile: null,
+    matches: 0,
+    remaining: 0,
+    startTime: null,
+    timerInterval: null,
+    elapsedTime: 0,
+    level: 1,
+    totalTiles: 88,
+    lastMoveTime: null,
+    stuckTimer: null,
+    proverbShown: false
+};
+
+// DOM elements
+const boardElement = document.getElementById('board');
+const matchesElement = document.getElementById('matches');
+const remainingElement = document.getElementById('remaining');
+const timeElement = document.getElementById('time');
+const levelElement = document.getElementById('level');
+const totalTilesElement = document.getElementById('total-tiles');
+const symbolNameElement = document.getElementById('symbol-name');
+const symbolMeaningElement = document.getElementById('symbol-meaning');
+const hintButton = document.getElementById('hint-btn');
+const shuffleButton = document.getElementById('shuffle-btn');
+const resetButton = document.getElementById('reset-btn');
+const nextLevelButton = document.getElementById('next-level-btn');
+const playAgainButton = document.getElementById('play-again-btn');
+const winMessage = document.getElementById('win-message');
+const winText = document.getElementById('win-text');
+
+// Initialize the game
+function initGame() {
+    createTiles();
+    renderBoard();
+    startTimer();
+    updateStats();
+    gameState.lastMoveTime = new Date();
+    gameState.proverbShown = false;
+    startStuckDetection();
+}
+
+// Create tiles with stacking based on level
+function createTiles() {
+    gameState.tiles = [];
+    const tilesPerSymbol = 4 + Math.floor(gameState.level / 2);
+    gameState.totalTiles = tilesPerSymbol * foodSymbols.length;
+    
+    const symbols = [];
+    for (let i = 0; i < tilesPerSymbol; i++) {
+        symbols.push(...foodSymbols);
+    }
+    
+    for (let i = symbols.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [symbols[i], symbols[j]] = [symbols[j], symbols[i]];
+    }
+    
+    const positions = generateStackedPositions(gameState.totalTiles, gameState.level);
+    
+    for (let i = 0; i < gameState.totalTiles; i++) {
+        gameState.tiles.push({
+            id: i,
+            symbol: symbols[i],
+            matched: false,
+            selected: false,
+            correctMatch: false,
+            x: positions[i].x,
+            y: positions[i].y,
+            level: positions[i].level,
+            free: false
+        });
+    }
+    
+    updateFreeTiles();
+    
+    let attempts = 0;
+    while (findAvailableMatches().length === 0 && attempts < 10) {
+        const unmatchedTiles = gameState.tiles.filter(t => !t.matched);
+        const symbols = unmatchedTiles.map(t => t.symbol);
+        for (let i = symbols.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [symbols[i], symbols[j]] = [symbols[j], symbols[i]];
+        }
+        unmatchedTiles.forEach((tile, index) => {
+            tile.symbol = symbols[index];
+        });
+        attempts++;
+    }
+    
+    gameState.matches = 0;
+    gameState.remaining = gameState.totalTiles;
+}
+
+// Generate stacked positions for tiles
+function generateStackedPositions(totalTiles, level) {
+    const positions = [];
+    const maxLevels = Math.min(level + 1, 4);
+    const tilesPerLevel = Math.ceil(totalTiles / maxLevels);
+    
+    for (let level = 0; level < maxLevels; level++) {
+        const levelTiles = (level === maxLevels - 1) ? 
+            totalTiles - (tilesPerLevel * (maxLevels - 1)) : tilesPerLevel;
+        
+        for (let i = 0; i < levelTiles; i++) {
+            const row = Math.floor(i / 8);
+            const col = i % 8;
+            
+            positions.push({
+                x: col * 85 + (level * 4),
+                y: row * 105 + (level * 6),
+                level: level + 1
+            });
+        }
+    }
+    
+    return positions;
+}
+
+// Real Mahjong free-tile detection
+function updateFreeTiles() {
+    const active = gameState.tiles.filter(t => !t.matched);
+    active.forEach(t => t.free = true);
+    
+    const isCovered = (tile) => {
+        return active.some(other => {
+            if (other.id === tile.id) return false;
+            if (other.level <= tile.level) return false;
+            const dx = Math.abs(tile.x - other.x);
+            const dy = Math.abs(tile.y - other.y);
+            return dx < 75 && dy < 95;
+        });
+    };
+    
+    active.forEach(tile => {
+        if (isCovered(tile)) {
+            tile.free = false;
+        }
+    });
+}
+
+// Render the game board with stacked tiles
+function renderBoard() {
+    boardElement.innerHTML = '';
+    
+    gameState.tiles.forEach(tile => {
+        if (!tile.matched) {
+            const tileElement = document.createElement('div');
+            tileElement.className = `tile level-${tile.level}`;
+            
+            if (tile.selected) {
+                tileElement.classList.add('selected');
+            }
+            if (tile.correctMatch) {
+                tileElement.classList.add('correct-match');
+            }
+            
+            tileElement.style.left = `${tile.x}px`;
+            tileElement.style.top = `${tile.y}px`;
+            
+            const img = document.createElement('img');
+            img.src = `images/${tile.symbol.imageFile}`;
+            img.alt = tile.symbol.name;
+            tileElement.appendChild(img);
+            
+            tileElement.addEventListener('click', () => selectTile(tile));
+            
+            if (!tile.free) {
+                tileElement.style.opacity = '0.7';
+                tileElement.style.cursor = 'not-allowed';
+                tileElement.onclick = null;
+            }
+            
+            boardElement.appendChild(tileElement);
+        }
+    });
+}
+
+// Handle tile selection
+function selectTile(tile) {
+    if (tile.matched || tile.selected || !tile.free) return;
+    
+    gameState.lastMoveTime = new Date();
+    gameState.proverbShown = false;
+    
+    if (!gameState.selectedTile) {
+        tile.selected = true;
+        gameState.selectedTile = tile;
+        showSymbolInfo(tile.symbol);
+        renderBoard();
+    } else {
+        if (gameState.selectedTile.symbol.id === tile.symbol.id) {
+            gameState.selectedTile.matched = true;
+            tile.matched = true;
+            gameState.matches++;
+            gameState.remaining -= 2;
+            updateFreeTiles();
+            renderBoard();
+            
+            if (gameState.remaining === 0) {
+                endLevel();
+            } else {
+                if (findAvailableMatches().length === 0) {
+                    showLossProverb();
+                }
+            }
+        } else {
+            gameState.selectedTile.selected = false;
+        }
+        
+        gameState.selectedTile = null;
+        updateStats();
+    }
+}
+
+// Start stuck detection
+function startStuckDetection() {
+    clearInterval(gameState.stuckTimer);
+    gameState.stuckTimer = setInterval(() => {
+        const now = new Date();
+        const timeSinceLastMove = (now - gameState.lastMoveTime) / 1000;
+        
+        if (timeSinceLastMove > 20 && !gameState.proverbShown) {
+            showEncouragingProverb();
+            gameState.proverbShown = true;
+        }
+    }, 1000);
+}
+
+// Show encouraging proverb when stuck
+function showEncouragingProverb() {
+    const proverb = proverbs[Math.floor(Math.random() * proverbs.length)];
+    showProverbMessage(proverb);
+}
+
+// Show loss proverb when no moves left
+function showLossProverb() {
+    const proverb = lossProverbs[Math.floor(Math.random() * lossProverbs.length)];
+    showProverbMessage(proverb);
+}
+
+// Show proverb message
+function showProverbMessage(proverb) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'proverb-message';
+    messageDiv.textContent = proverb;
+    
+    document.body.appendChild(messageDiv);
+    
+    setTimeout(() => {
+        if (document.body.contains(messageDiv)) {
+            document.body.removeChild(messageDiv);
+        }
+    }, 4000);
+}
+
+// Show symbol information
+function showSymbolInfo(symbol) {
+    symbolNameElement.textContent = symbol.name;
+    symbolMeaningElement.textContent = symbol.meaning;
+}
+
+// Update game statistics
+function updateStats() {
+    matchesElement.textContent = gameState.matches;
+    remainingElement.textContent = gameState.remaining;
+    levelElement.textContent = gameState.level;
+    totalTilesElement.textContent = gameState.totalTiles;
+}
+
+// Start the game timer
+function startTimer() {
+    gameState.startTime = new Date();
+    clearInterval(gameState.timerInterval);
+    
+    gameState.timerInterval = setInterval(() => {
+        const now = new Date();
+        gameState.elapsedTime = Math.floor((now - gameState.startTime) / 1000);
+        const minutes = Math.floor(gameState.elapsedTime / 60);
+        const seconds = gameState.elapsedTime % 60;
+        timeElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+}
+
+// Provide a hint
+function provideHint() {
+    const availableMatches = findAvailableMatches();
+    if (availableMatches.length > 0) {
+        const match = availableMatches[0];
+        flashTiles([match[0], match[1]]);
+    } else {
+        showLossProverb();
+    }
+}
+
+// Find available matches
+function findAvailableMatches() {
+    const matches = [];
+    const freeTiles = gameState.tiles.filter(tile => !tile.matched && tile.free);
+    
+    for (let i = 0; i < freeTiles.length; i++) {
+        for (let j = i + 1; j < freeTiles.length; j++) {
+            if (freeTiles[i].symbol.id === freeTiles[j].symbol.id) {
+                matches.push([freeTiles[i], freeTiles[j]]);
+            }
+        }
+    }
+    
+    return matches;
+}
+
+// Flash tiles for hint
+function flashTiles(tiles) {
+    tiles.forEach(tile => {
+        tile.selected = true;
+    });
+    
+    renderBoard();
+    
+    setTimeout(() => {
+        tiles.forEach(tile => {
+            tile.selected = false;
+        });
+        renderBoard();
+    }, 1000);
+}
+
+// Shuffle tiles
+function shuffleTiles() {
+    if (gameState.selectedTile) {
+        gameState.selectedTile.selected = false;
+        gameState.selectedTile = null;
+    }
+    
+    const unmatchedTiles = gameState.tiles.filter(tile => !tile.matched);
+    const matchedTiles = gameState.tiles.filter(tile => tile.matched);
+    
+    const symbols = unmatchedTiles.map(tile => tile.symbol);
+    for (let i = symbols.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [symbols[i], symbols[j]] = [symbols[j], symbols[i]];
+    }
+    
+    unmatchedTiles.forEach((tile, index) => {
+        tile.symbol = symbols[index];
+    });
+    
+    gameState.tiles = [...unmatchedTiles, ...matchedTiles];
+    renderBoard();
+}
+
+// Reset game to level 1
+function resetGame() {
+    clearInterval(gameState.timerInterval);
+    clearInterval(gameState.stuckTimer);
+    winMessage.classList.add('hidden');
+    gameState.level = 1;
+    initGame();
+}
+
+// Go to next level
+function nextLevel() {
+    clearInterval(gameState.timerInterval);
+    clearInterval(gameState.stuckTimer);
+    winMessage.classList.add('hidden');
+    gameState.level++;
+    initGame();
+}
+
+// End current level
+function endLevel() {
+    clearInterval(gameState.timerInterval);
+    clearInterval(gameState.stuckTimer);
+    winText.textContent = `Level ${gameState.level} Complete! Ready for level ${gameState.level + 1}?`;
+    winMessage.classList.remove('hidden');
+}
+
+// Event listeners
+hintButton.addEventListener('click', provideHint);
+shuffleButton.addEventListener('click', shuffleTiles);
+resetButton.addEventListener('click', resetGame);
+nextLevelButton.addEventListener('click', nextLevel);
+playAgainButton.addEventListener('click', resetGame);
+
+// Initialize when page loads
+window.addEventListener('DOMContentLoaded', initGame);
+</script>
