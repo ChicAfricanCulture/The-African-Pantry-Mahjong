@@ -1169,3 +1169,84 @@ window.addEventListener('resize', () => {
 </script>
 </body>
 </html>
+<!-- Horizontal Cross-Promo Widget -->
+<div class="afw-cross-promo">
+  <div class="promo-content">
+    <div class="promo-site">
+      <span class="promo-label">Explore African Recipes</span>
+      <a href="https://www.africanfood.recipes/" class="promo-link" target="_blank" rel="noopener">
+        African Food Recipes
+      </a>
+    </div>
+    <div class="promo-divider">↔</div>
+    <div class="promo-site">
+      <span class="promo-label">Play & Learn Pantry Ingredients</span>
+      <a href="https://chicafricanculture.github.io/The-African-Pantry-Mahjong/" class="promo-link" target="_blank" rel="noopener">
+        African Pantry Mahjong
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .afw-cross-promo {
+    background: linear-gradient(135deg, #1a2a3a, #0d1b2a); /* Matches Mahjong dark theme */
+    color: #e0e0e0;
+    padding: 12px 20px;
+    text-align: center;
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 1000px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .promo-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .promo-site {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .promo-label {
+    font-size: 0.9rem;
+    color: #b8c7d6;
+    margin-bottom: 4px;
+  }
+
+  .promo-link {
+    color: #f9a826;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s;
+  }
+
+  .promo-link:hover {
+    color: #e8951e;
+    text-decoration: underline;
+  }
+
+  .promo-divider {
+    font-size: 1.4rem;
+    color: #f9a826;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 600px) {
+    .promo-content {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .promo-divider {
+      display: none; /* Hide arrow on small screens */
+    }
+  }
+</style>
