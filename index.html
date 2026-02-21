@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,13 +14,12 @@
     :root{
       --bg1:#1a2a3a;
       --bg2:#0d1b2a;
-      --panel:#0d1b2a;
-      --panel2:#1a2a3a;
+      --panel: rgba(13, 27, 42, 0.92);
+      --panel2: rgba(26, 42, 58, 0.80);
       --accent:#f9a826;
       --muted:#b8c7d6;
       --text:#e0e0e0;
 
-      /* Tiles must NOT be transparent */
       --tileA:#e8d0b0;
       --tileB:#b08968;
       --tileBorder:#c49a6c;
@@ -46,7 +44,7 @@
       text-align:center;
       margin-bottom:18px;
       padding:36px 20px;
-      background: var(--panel);
+      background: rgba(13, 27, 42, 0.95);
       border-radius:15px;
       box-shadow:0 8px 32px rgba(0,0,0,0.35);
       border:1px solid rgba(255,255,255,0.10);
@@ -85,16 +83,16 @@
     }
 
     .board-container,.info-panel{
-      background: rgba(13, 27, 42, 0.92);
+      background: var(--panel);
       border-radius:15px;
       padding:18px;
       box-shadow:0 8px 32px rgba(0,0,0,0.35);
       border:1px solid rgba(255,255,255,0.10);
-      overflow:hidden; /* nothing outside containers */
+      overflow:hidden;
     }
 
     .level-indicator{
-      background: rgba(26, 42, 58, 0.80);
+      background: var(--panel2);
       border:1px solid rgba(249,168,38,0.30);
       border-radius:10px;
       padding:12px 14px;
@@ -107,7 +105,6 @@
       letter-spacing:0.4px;
     }
 
-    /* The board is a RELATIVE container for absolutely positioned stacked tiles */
     .mahjong-board{
       position:relative;
       width:100%;
@@ -115,7 +112,7 @@
       border-radius:12px;
       background: rgba(26,42,58,0.35);
       border: 1px solid rgba(255,255,255,0.08);
-      overflow:hidden; /* strict containment */
+      overflow:hidden;
     }
 
     .tile{
@@ -144,16 +141,13 @@
       box-shadow:0 0 18px rgba(249,168,38,0.55), 0 12px 22px rgba(0,0,0,0.65);
     }
 
-    /* No transparency: blocked stays opaque */
     .tile.blocked{
       filter: grayscale(0.9) brightness(0.72);
       cursor:not-allowed;
     }
 
-    /* No transparency: matched tile is removed entirely */
-    .tile.matched{
-      display:none !important;
-    }
+    /* no transparency: removed from DOM flow */
+    .tile.matched{ display:none !important; }
 
     .tile img{
       width:100%;
@@ -184,7 +178,7 @@
       display:grid;
       grid-template-columns: repeat(4,1fr);
       gap:10px;
-      background: rgba(26,42,58,0.80);
+      background: var(--panel2);
       padding:14px;
       border-radius:10px;
     }
@@ -193,7 +187,7 @@
     .stat-label{ color:var(--muted); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.5px; }
 
     .symbol-info{
-      background: rgba(26,42,58,0.80);
+      background: var(--panel2);
       padding:14px;
       border-radius:10px;
       min-height:120px;
@@ -246,11 +240,6 @@
       box-shadow:0 10px 40px rgba(0,0,0,0.55);
       max-width:520px;
       border:2px solid #fff3e0;
-      animation: floatIn 0.35s ease-out;
-    }
-    @keyframes floatIn{
-      from{ opacity:0; transform: translate(-50%,-58%); }
-      to{ opacity:1; transform: translate(-50%,-50%); }
     }
 
     .win-message{
@@ -320,27 +309,15 @@
         <div class="level-indicator">
           <span class="level-text">Level <span id="level">1</span> · <span id="total-tiles">64</span> Ingredients</span>
         </div>
-        <div class="mahjong-board" id="board" aria-label="Mahjong board"></div>
+        <div class="mahjong-board" id="board"></div>
       </div>
 
       <div class="info-panel">
         <div class="stats">
-          <div class="stat">
-            <div class="stat-value" id="matches">0</div>
-            <div class="stat-label">Matches</div>
-          </div>
-          <div class="stat">
-            <div class="stat-value" id="remaining">64</div>
-            <div class="stat-label">Remaining</div>
-          </div>
-          <div class="stat">
-            <div class="stat-value" id="time">00:00</div>
-            <div class="stat-label">Time</div>
-          </div>
-          <div class="stat">
-            <div class="stat-value" id="shuffle-count">3</div>
-            <div class="stat-label">Shuffles</div>
-          </div>
+          <div class="stat"><div class="stat-value" id="matches">0</div><div class="stat-label">Matches</div></div>
+          <div class="stat"><div class="stat-value" id="remaining">64</div><div class="stat-label">Remaining</div></div>
+          <div class="stat"><div class="stat-value" id="time">00:00</div><div class="stat-label">Time</div></div>
+          <div class="stat"><div class="stat-value" id="shuffle-count">3</div><div class="stat-label">Shuffles</div></div>
         </div>
 
         <div class="symbol-info">
@@ -349,9 +326,9 @@
         </div>
 
         <div class="controls">
-          <button id="hint-btn" title="Highlight a matching pair">🔍 Find Match</button>
-          <button id="shuffle-btn" title="Rearrange ingredients (3 per game)">🔄 Shuffle</button>
-          <button id="reset-btn" title="Start a new game">🆕 New Game</button>
+          <button id="hint-btn">🔍 Find Match</button>
+          <button id="shuffle-btn">🔄 Shuffle</button>
+          <button id="reset-btn">🆕 New Game</button>
         </div>
         <div class="shuffle-warning" id="shuffle-warning"></div>
       </div>
@@ -362,7 +339,7 @@
     </footer>
   </div>
 
-  <div class="win-message hidden" id="win-message" role="dialog" aria-modal="true" aria-label="Win message">
+  <div class="win-message hidden" id="win-message">
     <h2>🏆 Pantry Mastered! 🏆</h2>
     <p id="win-text">You've matched all the ingredients!</p>
     <button id="next-level-btn">⬆️ Next Level</button>
@@ -370,7 +347,6 @@
   </div>
 
 <script>
-/** ==================== PROVERBS ==================== */
 const proverbs = [
   "The one who eats alone cannot discuss the taste of the food with others.",
   "The firewood that cooks the food is the same one that burns the cook.",
@@ -397,7 +373,6 @@ const lossProverbs = [
   "The best fisherman sometimes comes home empty-handed."
 ];
 
-/** ==================== FOOD SYMBOLS ==================== */
 const foodSymbols = [
   { id: 1, name: "Baobab", meaning: "Baobab fruit - vitamin-rich powder for drinks, sauces, and porridges. The 'tree of life' provides food and medicine.", imageFile: "baobab.png" },
   { id: 2, name: "Bee", meaning: "Honey - natural sweetener in traditional cooking, used in teas, baked goods, and as a preservative. Symbolizes community and industry.", imageFile: "bee.png" },
@@ -416,73 +391,68 @@ const foodSymbols = [
   { id: 15, name: "Goat", meaning: "Goat pepper soup, ceremonial dishes. Goat meat is lean and flavorful, often reserved for special guests and celebrations.", imageFile: "goat.png" },
   { id: 16, name: "Grain", meaning: "Millet, sorghum, teff - ancient grains. These drought-resistant grains have nourished Africans for thousands of years.", imageFile: "grain.png" },
   { id: 17, name: "Hibiscus", meaning: "Zobo drink, sorrel - refreshing beverages. Dried hibiscus flowers make a tart, cranberry-like drink enjoyed across the continent.", imageFile: "hibiscus.png" },
-  { id: 18, name: "Maggi", meaning: "Essential seasoning in modern African cooking. These stock cubes add umami to stews and sauces, a ubiquitous kitchen staple.", imageFile: "maggi.png" },
-  { id: 19, name: "Mango", meaning: "Sweet tropical fruit - fresh, dried, or in chutneys. Mango season is celebrated, with dozens of local varieties.", imageFile: "Mango.png" },
-  { id: 20, name: "Mortar", meaning: "Pounding fufu, grinding spices. The mortar and pestle are the heartbeat of the kitchen, their rhythm signaling mealtime.", imageFile: "mortor.png" },
-  { id: 21, name: "Palm Oil", meaning: "Banga soup, essential for stews. The red oil gives dishes their characteristic color and rich flavor, pressed from palm fruit.", imageFile: "palm-oil.png" },
-  { id: 22, name: "Pepper", meaning: "Scotch bonnet, peri-peri, spice blends. African cuisine embraces heat, with peppers adding flavor and preserving food.", imageFile: "pepper.png" },
-  { id: 23, name: "Plantain", meaning: "Kelewele, dodo, fried plantains. Sweet or savory, green or ripe, plantains are endlessly versatile.", imageFile: "plantain.png" },
-  { id: 24, name: "Plate", meaning: "Communal dining and sharing meals. Food is meant to be shared - eating alone is almost unheard of in traditional culture.", imageFile: "plate.png" },
-  { id: 25, name: "Pot", meaning: "One-pot cooking, communal meals. The pot gathers ingredients and people alike, simmering stories with stews.", imageFile: "pot.png" },
-  { id: 26, name: "Rice", meaning: "Jollof, fried rice, coconut rice. The subject of friendly rivalries between nations, each claiming the best version.", imageFile: "rice.png" },
-  { id: 27, name: "Salt", meaning: "Preservation and flavor. Salt was once traded ounce for ounce with gold, essential for survival and taste.", imageFile: "salt.png" },
-  { id: 28, name: "Street Hawkers", meaning: "Mobile food vendors and street food culture. From roasted plantains to fried yam, street food feeds the rhythm of city life.", imageFile: "street-hawkers.png" },
-  { id: 29, name: "Vegetables", meaning: "Cassava leaves, bitterleaf, spinach. Wild and cultivated greens add minerals and depth to sauces.", imageFile: "vegetables.png" },
-  { id: 30, name: "Water", meaning: "The foundation of all cooking. No soup, no stew, no life without water. The first ingredient in every dish.", imageFile: "water.png" },
-  { id: 31, name: "Wood", meaning: "Fuel for traditional cooking fires. The choice of wood affects flavor, with different woods for smoking and slow-cooking.", imageFile: "wood.png" },
-  { id: 32, name: "Yam", meaning: "Yam pottage (asaro), boiled yam with sauces. Celebrated at New Yam festivals, symbolizing abundance and new beginnings.", imageFile: "yam.png" }
+  { id: 18, name: "Maggi", meaning: "Essential seasoning in modern African cooking.", imageFile: "maggi.png" },
+  { id: 19, name: "Mango", meaning: "Sweet tropical fruit - fresh, dried, or in chutneys.", imageFile: "Mango.png" },
+  { id: 20, name: "Mortar", meaning: "Pounding fufu, grinding spices.", imageFile: "mortor.png" },
+  { id: 21, name: "Palm Oil", meaning: "Banga soup, essential for stews.", imageFile: "palm-oil.png" },
+  { id: 22, name: "Pepper", meaning: "Scotch bonnet, peri-peri, spice blends.", imageFile: "pepper.png" },
+  { id: 23, name: "Plantain", meaning: "Kelewele, dodo, fried plantains.", imageFile: "plantain.png" },
+  { id: 24, name: "Plate", meaning: "Communal dining and sharing meals.", imageFile: "plate.png" },
+  { id: 25, name: "Pot", meaning: "One-pot cooking, communal meals.", imageFile: "pot.png" },
+  { id: 26, name: "Rice", meaning: "Jollof, fried rice, coconut rice.", imageFile: "rice.png" },
+  { id: 27, name: "Salt", meaning: "Preservation and flavor.", imageFile: "salt.png" },
+  { id: 28, name: "Street Hawkers", meaning: "Mobile food vendors and street food culture.", imageFile: "street-hawkers.png" },
+  { id: 29, name: "Vegetables", meaning: "Cassava leaves, bitterleaf, spinach.", imageFile: "vegetables.png" },
+  { id: 30, name: "Water", meaning: "The foundation of all cooking.", imageFile: "water.png" },
+  { id: 31, name: "Wood", meaning: "Fuel for traditional cooking fires.", imageFile: "wood.png" },
+  { id: 32, name: "Yam", meaning: "Yam pottage (asaro), boiled yam with sauces.", imageFile: "yam.png" }
 ];
 
-/** ==================== GAME STATE ==================== */
-const gameState = {
+const dom = {
+  board: document.getElementById('board'),
+  matches: document.getElementById('matches'),
+  remaining: document.getElementById('remaining'),
+  time: document.getElementById('time'),
+  level: document.getElementById('level'),
+  total: document.getElementById('total-tiles'),
+  name: document.getElementById('symbol-name'),
+  meaning: document.getElementById('symbol-meaning'),
+  hint: document.getElementById('hint-btn'),
+  shuffle: document.getElementById('shuffle-btn'),
+  reset: document.getElementById('reset-btn'),
+  next: document.getElementById('next-level-btn'),
+  again: document.getElementById('play-again-btn'),
+  win: document.getElementById('win-message'),
+  winText: document.getElementById('win-text'),
+  shuffleCount: document.getElementById('shuffle-count'),
+  shuffleWarning: document.getElementById('shuffle-warning')
+};
+
+const state = {
   tiles: [],
   selectedId: null,
   matches: 0,
   remaining: 64,
   level: 1,
   totalTiles: 64,
+  shufflesRemaining: 3,
   startTime: null,
   timerInterval: null,
-  elapsedTime: 0,
-  lastMoveTime: null,
-  stuckTimer: null,
-  proverbShown: false,
-  shufflesRemaining: 3,
+  elapsed: 0,
   layout: [],
-  geom: { tileW: 70, tileH: 87, stepX: 55, stepY: 68, pad: 14, liftX: 10, liftY: 10, boardW: 600, boardH: 500 }
+  geom: { tileW: 70, tileH: 87, stepX: 55, stepY: 68, pad: 14, liftX: 10, liftY: 10, minX: 0, minY: 0 }
 };
 
-/** ==================== DOM ELEMENTS ==================== */
-const boardElement = document.getElementById('board');
-const matchesElement = document.getElementById('matches');
-const remainingElement = document.getElementById('remaining');
-const timeElement = document.getElementById('time');
-const levelElement = document.getElementById('level');
-const totalTilesElement = document.getElementById('total-tiles');
-const symbolNameElement = document.getElementById('symbol-name');
-const symbolMeaningElement = document.getElementById('symbol-meaning');
-const hintButton = document.getElementById('hint-btn');
-const shuffleButton = document.getElementById('shuffle-btn');
-const resetButton = document.getElementById('reset-btn');
-const nextLevelButton = document.getElementById('next-level-btn');
-const playAgainButton = document.getElementById('play-again-btn');
-const winMessage = document.getElementById('win-message');
-const winText = document.getElementById('win-text');
-const shuffleCountElement = document.getElementById('shuffle-count');
-const shuffleWarning = document.getElementById('shuffle-warning');
-
-/** ==================== UTIL ==================== */
 function shuffleInPlace(arr){
   for(let i=arr.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
     [arr[i],arr[j]]=[arr[j],arr[i]];
   }
 }
+function kpos(p){ return `${p.l}:${p.gx}:${p.gy}`; }
+function kcol(p){ return `${p.gx}:${p.gy}`; }
 
-function keyPos(p){ return `${p.l}:${p.gx}:${p.gy}`; }
-function keyColumn(p){ return `${p.gx}:${p.gy}`; }
-
-function showProverbMessage(text){
+function showMsg(text){
   const existing=document.querySelector('.proverb-message');
   if(existing) existing.remove();
   const div=document.createElement('div');
@@ -492,635 +462,365 @@ function showProverbMessage(text){
   setTimeout(()=>{ if(div.parentNode) div.remove(); }, 3200);
 }
 
-function showSymbolInfo(symbol){
-  symbolNameElement.textContent = symbol.name;
-  symbolMeaningElement.textContent = symbol.meaning;
+function showInfo(sym){
+  dom.name.textContent = sym.name;
+  dom.meaning.textContent = sym.meaning;
 }
 
-/** ==================== LAYOUT (64 positions, stacked) ==================== */
-/**
- * Layer 1 (bottom): 8x4 = 32
- * Layer 2:          6x3 = 18
- * Layer 3:          4x2 =  8
- * Layer 4 (top):    2x3 =  6
- * Total = 64
- */
 function buildLayout64(){
   const layout = [];
-
-  // l=1 bottom
-  for(let gy=0; gy<4; gy++){
-    for(let gx=0; gx<8; gx++){
-      layout.push({ l:1, gx, gy });
-    }
-  }
-
-  // l=2
-  for(let gy=0; gy<3; gy++){
-    for(let gx=1; gx<=6; gx++){
-      layout.push({ l:2, gx, gy });
-    }
-  }
-
-  // l=3
-  for(let gy=0; gy<2; gy++){
-    for(let gx=2; gx<=5; gx++){
-      layout.push({ l:3, gx, gy });
-    }
-  }
-
-  // l=4
-  for(let gy=0; gy<3; gy++){
-    for(let gx=3; gx<=4; gx++){
-      layout.push({ l:4, gx, gy });
-    }
-  }
-
-  if(layout.length !== 64){
-    throw new Error(`Layout error: expected 64 positions, got ${layout.length}`);
-  }
+  for(let gy=0; gy<4; gy++) for(let gx=0; gx<8; gx++) layout.push({ l:1, gx, gy });      // 32
+  for(let gy=0; gy<3; gy++) for(let gx=1; gx<=6; gx++) layout.push({ l:2, gx, gy });     // 18 (50)
+  for(let gy=0; gy<2; gy++) for(let gx=2; gx<=5; gx++) layout.push({ l:3, gx, gy });     // 8  (58)
+  for(let gy=0; gy<3; gy++) for(let gx=3; gx<=4; gx++) layout.push({ l:4, gx, gy });     // 6  (64)
+  if(layout.length !== 64) throw new Error(`Layout not 64: ${layout.length}`);
   return layout;
 }
 
-/** ==================== FREE TILE RULES (stacked solitaire) ==================== */
-/**
- * A tile is FREE if:
- *  1) No tile exists directly above it at same (gx,gy) on any higher layer.
- *  2) At least one horizontal side is open on same layer (no left neighbor OR no right neighbor).
- */
-function computeFreeSet(occupiedSet){
-  const freeSet = new Set();
+function computeFreeSet(occupied){
+  const free = new Set();
+  for(const key of occupied){
+    const [l,gx,gy] = key.split(':').map(Number);
 
-  for(const pos of occupiedSet){
-    const { l, gx, gy } = pos;
-
-    // Above blocker?
-    let hasAbove = false;
-    for(let higher=l+1; higher<=4; higher++){
-      if(occupiedSet.has(`${higher}:${gx}:${gy}`)){
-        hasAbove = true;
-        break;
-      }
+    let above=false;
+    for(let hl=l+1; hl<=4; hl++){
+      if(occupied.has(`${hl}:${gx}:${gy}`)){ above=true; break; }
     }
-    if(hasAbove) continue;
+    if(above) continue;
 
-    const leftKey = `${l}:${gx-1}:${gy}`;
-    const rightKey = `${l}:${gx+1}:${gy}`;
-    const leftBlocked = occupiedSet.has(leftKey);
-    const rightBlocked = occupiedSet.has(rightKey);
-
-    if(!leftBlocked || !rightBlocked){
-      freeSet.add(`${l}:${gx}:${gy}`);
-    }
+    const left = occupied.has(`${l}:${gx-1}:${gy}`);
+    const right = occupied.has(`${l}:${gx+1}:${gy}`);
+    if(!left || !right) free.add(`${l}:${gx}:${gy}`);
   }
-
-  return freeSet;
+  return free;
 }
 
-/** ==================== WINNABLE GENERATION (reverse-removal assignment) ==================== */
-function generateWinnableTiles(){
-  const layout = buildLayout64();
-  gameState.layout = layout;
+function generateWinnable(){
+  state.layout = buildLayout64();
+  const remaining = new Set(state.layout.map(kpos));
 
-  // Remaining positions as keys
-  const remaining = new Set(layout.map(keyPos));
-
-  // Build symbol pool: 32 symbols x2
   const symbols = [];
-  for(const s of foodSymbols){ symbols.push(s, s); }
+  for(const s of foodSymbols) symbols.push(s, s);
   shuffleInPlace(symbols);
 
-  const assigned = new Map(); // posKey -> symbol
-  const columnSymbol = new Map(); // gx:gy -> symbolId to prevent same tile stacked directly
+  const assigned = new Map();
+  const columnSymbol = new Map();
 
-  // Repeat: pick two currently-free positions, assign next symbol pair, remove them from remaining
-  let symIndex = 0;
-  let guard = 0;
+  let idx=0;
+  let guard=0;
 
-  while(remaining.size > 0){
-    guard++;
-    if(guard > 5000) throw new Error("Generation guard triggered (unexpected).");
-
+  while(remaining.size){
+    guard++; if(guard>7000) return generateWinnable();
     const freeKeys = Array.from(computeFreeSet(remaining));
-    if(freeKeys.length < 2){
-      // Extremely unlikely with this layout; but if it happens, reshuffle symbols and restart.
-      return generateWinnableTiles();
-    }
+    if(freeKeys.length < 2) return generateWinnable();
 
-    // Pick two free positions that won't violate "no identical stacked in same column"
-    const s = symbols[symIndex];
-    const sId = s.id;
+    const sym = symbols[idx];
+    const symId = sym.id;
 
-    // Find first candidate
     shuffleInPlace(freeKeys);
-    let a = null;
-    let b = null;
 
+    let a=null,b=null;
     for(let i=0;i<freeKeys.length;i++){
       const kA = freeKeys[i];
-      const [lA,gxA,gyA] = kA.split(':').map(Number);
-      const colA = `${gxA}:${gyA}`;
-      if(columnSymbol.get(colA) === sId) continue;
+      const [,gxA,gyA] = kA.split(':');
+      if(columnSymbol.get(`${gxA}:${gyA}`) === symId) continue;
 
       for(let j=i+1;j<freeKeys.length;j++){
         const kB = freeKeys[j];
-        const [lB,gxB,gyB] = kB.split(':').map(Number);
-        const colB = `${gxB}:${gyB}`;
-        if(columnSymbol.get(colB) === sId) continue;
+        const [,gxB,gyB] = kB.split(':');
+        if(columnSymbol.get(`${gxB}:${gyB}`) === symId) continue;
 
-        a = kA; b = kB;
-        break;
+        a=kA; b=kB; break;
       }
       if(a && b) break;
     }
 
     if(!a || !b){
-      // Could not place this symbol pair without stacking-identical violation.
-      // Move this symbol pair later by reshuffling the remaining symbols slice.
-      const slice = symbols.slice(symIndex);
+      const slice = symbols.slice(idx);
       shuffleInPlace(slice);
-      for(let i=0;i<slice.length;i++) symbols[symIndex+i] = slice[i];
+      for(let i=0;i<slice.length;i++) symbols[idx+i] = slice[i];
       continue;
     }
 
-    assigned.set(a, s);
-    assigned.set(b, s);
+    assigned.set(a, sym);
+    assigned.set(b, sym);
 
-    // Mark columns used by this symbol id (prevents identical vertical stacking)
     {
       const [,gxA,gyA] = a.split(':');
       const [,gxB,gyB] = b.split(':');
-      columnSymbol.set(`${gxA}:${gyA}`, sId);
-      columnSymbol.set(`${gxB}:${gyB}`, sId);
+      columnSymbol.set(`${gxA}:${gyA}`, symId);
+      columnSymbol.set(`${gxB}:${gyB}`, symId);
     }
 
     remaining.delete(a);
     remaining.delete(b);
-    symIndex += 2;
+    idx += 2;
   }
 
-  // Build tile objects in stable ID order
-  const tiles = layout.map((pos, idx) => {
-    const k = keyPos(pos);
-    const symbol = assigned.get(k);
-    if(!symbol) throw new Error("Assignment missing for a position.");
-    return {
-      id: idx,
-      pos,
-      symbol,
-      matched: false,
-      selected: false,
-      free: false
-    };
-  });
+  state.tiles = state.layout.map((pos, id) => ({
+    id,
+    pos,
+    symbol: assigned.get(kpos(pos)),
+    matched: false,
+    selected: false,
+    free: false
+  }));
 
-  gameState.tiles = tiles;
-  gameState.matches = 0;
-  gameState.remaining = 64;
-  gameState.totalTiles = 64;
-  gameState.selectedId = null;
+  state.matches = 0;
+  state.remaining = 64;
+  state.totalTiles = 64;
+  state.selectedId = null;
 }
 
-/** ==================== GEOMETRY (responsive stacking) ==================== */
 function computeGeometry(){
-  const containerWidth = boardElement.clientWidth || boardElement.parentElement.clientWidth || 600;
-
-  // target: fit 8 columns + overlap space comfortably
-  const tileW = Math.max(46, Math.min(78, Math.floor(containerWidth / 10.2)));
+  const containerW = dom.board.clientWidth || dom.board.parentElement.clientWidth || 600;
+  const tileW = Math.max(46, Math.min(78, Math.floor(containerW / 10.2)));
   const tileH = Math.round(tileW * (87/70));
-
-  // Overlap steps (stacked look)
   const stepX = Math.round(tileW * 0.78);
   const stepY = Math.round(tileH * 0.78);
-
   const pad = Math.round(tileW * 0.35);
   const liftX = Math.round(tileW * 0.14);
   const liftY = Math.round(tileH * 0.10);
 
-  // compute extents from layout
-  const layout = gameState.layout.length ? gameState.layout : buildLayout64();
-
-  let maxX = 0, maxY = 0, minX = 1e9, minY = 1e9;
-  for(const p of layout){
+  let minX=1e9, minY=1e9, maxX=0, maxY=0;
+  for(const p of state.layout){
     const x = pad + p.gx*stepX + (p.l-1)*liftX;
     const y = pad + p.gy*stepY - (p.l-1)*liftY;
-    minX = Math.min(minX, x);
-    minY = Math.min(minY, y);
-    maxX = Math.max(maxX, x);
-    maxY = Math.max(maxY, y);
+    minX = Math.min(minX, x); minY = Math.min(minY, y);
+    maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
   }
 
-  const boardW = Math.max(containerWidth, Math.ceil((maxX - minX) + tileW + pad));
-  const boardH = Math.ceil((maxY - minY) + tileH + pad);
-
-  gameState.geom = { tileW, tileH, stepX, stepY, pad, liftX, liftY, boardW, boardH, minX, minY };
-  boardElement.style.height = `${boardH}px`;
+  state.geom = { tileW, tileH, stepX, stepY, pad, liftX, liftY, minX, minY };
+  dom.board.style.height = `${Math.ceil((maxY-minY)+tileH+pad*2)}px`;
 }
 
-/** ==================== FREE TILE UPDATE ==================== */
-function updateFreeTiles(){
-  const occupied = new Set();
-  for(const t of gameState.tiles){
-    if(!t.matched) occupied.add(keyPos(t.pos));
+function updateFree(){
+  const occ = new Set();
+  for(const t of state.tiles) if(!t.matched) occ.add(kpos(t.pos));
+  const freeKeys = computeFreeSet(occ);
+  for(const t of state.tiles){
+    if(t.matched){ t.free=false; continue; }
+    t.free = freeKeys.has(kpos(t.pos));
   }
-
-  const freeKeys = computeFreeSet(occupied);
-  for(const t of gameState.tiles){
-    if(t.matched){ t.free = false; continue; }
-    t.free = freeKeys.has(keyPos(t.pos));
-  }
-
-  // If only a few left, keep it moving
-  const active = gameState.tiles.filter(t => !t.matched);
-  if(active.length <= 4){
-    for(const t of active) t.free = true;
-  }
+  const active = state.tiles.filter(t=>!t.matched);
+  if(active.length <= 4) for(const t of active) t.free = true;
 }
 
-/** ==================== RENDER ==================== */
-function renderBoard(){
+function render(){
   computeGeometry();
-  boardElement.innerHTML = '';
+  dom.board.innerHTML = '';
 
-  const { tileW, tileH, stepX, stepY, pad, liftX, liftY, minX, minY } = gameState.geom;
+  const { tileW, tileH, stepX, stepY, pad, liftX, liftY, minX, minY } = state.geom;
 
-  // Sort: higher layer on top
-  const sorted = [...gameState.tiles].sort((a,b) => {
+  const sorted = [...state.tiles].sort((a,b)=>{
     if(a.pos.l !== b.pos.l) return a.pos.l - b.pos.l;
     if(a.pos.gy !== b.pos.gy) return a.pos.gy - b.pos.gy;
     return a.pos.gx - b.pos.gx;
   });
 
-  for(const tile of sorted){
-    if(tile.matched) continue;
+  for(const t of sorted){
+    if(t.matched) continue;
 
     const el = document.createElement('div');
     el.className = 'tile';
-    el.dataset.id = String(tile.id);
+    el.dataset.id = String(t.id);
 
-    if(tile.selected) el.classList.add('selected');
-    if(!tile.free) el.classList.add('blocked');
+    if(t.selected) el.classList.add('selected');
+    if(!t.free) el.classList.add('blocked');
 
-    // position
-    const x = pad + tile.pos.gx*stepX + (tile.pos.l-1)*liftX - minX + pad;
-    const y = pad + tile.pos.gy*stepY - (tile.pos.l-1)*liftY - minY + pad;
+    const x = pad + t.pos.gx*stepX + (t.pos.l-1)*liftX - minX + pad;
+    const y = pad + t.pos.gy*stepY - (t.pos.l-1)*liftY - minY + pad;
 
     el.style.left = `${x}px`;
     el.style.top = `${y}px`;
     el.style.width = `${tileW}px`;
     el.style.height = `${tileH}px`;
-
-    // z-index: layer dominates
-    el.style.zIndex = String(tile.pos.l * 1000 + tile.pos.gy * 10 + tile.pos.gx);
+    el.style.zIndex = String(t.pos.l*1000 + t.pos.gy*10 + t.pos.gx);
 
     const img = document.createElement('img');
-    img.src = `images/${tile.symbol.imageFile}`;
-    img.alt = tile.symbol.name;
+    img.src = `images/${t.symbol.imageFile}`;
+    img.alt = t.symbol.name;
     img.onerror = function(){
-      const initial = encodeURIComponent(tile.symbol.name.charAt(0).toUpperCase());
+      const initial = encodeURIComponent(t.symbol.name.charAt(0).toUpperCase());
       this.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="70" height="87" viewBox="0 0 70 87"><rect width="70" height="87" fill="%23b08968" rx="12"/><text x="35" y="52" font-family="Arial" font-size="26" fill="%23f9a826" text-anchor="middle">${initial}</text></svg>`;
     };
     el.appendChild(img);
 
-    el.addEventListener('click', (e) => {
-      e.stopPropagation();
-      selectTile(tile.id);
-    });
-
-    boardElement.appendChild(el);
+    el.addEventListener('click', () => selectTile(t.id));
+    dom.board.appendChild(el);
   }
 
-  updateButtonStates();
+  updateButtons();
 }
 
-/** ==================== GAMEPLAY ==================== */
-function selectTile(tileId){
-  const tile = gameState.tiles.find(t => t.id === tileId);
-  if(!tile || tile.matched || !tile.free) return;
+function findMatches(){
+  const free = state.tiles.filter(t=>!t.matched && t.free);
+  const map = new Map();
+  for(const t of free){
+    if(!map.has(t.symbol.id)) map.set(t.symbol.id, []);
+    map.get(t.symbol.id).push(t);
+  }
+  const pairs = [];
+  for(const arr of map.values()){
+    if(arr.length>=2) pairs.push([arr[0], arr[1]]);
+  }
+  return pairs;
+}
 
-  gameState.lastMoveTime = new Date();
-  gameState.proverbShown = false;
+function selectTile(id){
+  const t = state.tiles.find(x=>x.id===id);
+  if(!t || t.matched || !t.free) return;
 
-  // no selection yet
-  if(gameState.selectedId === null){
-    for(const t of gameState.tiles) t.selected = false;
-    tile.selected = true;
-    gameState.selectedId = tile.id;
-    showSymbolInfo(tile.symbol);
-    renderBoard();
+  if(state.selectedId === null){
+    for(const x of state.tiles) x.selected=false;
+    t.selected=true;
+    state.selectedId=t.id;
+    showInfo(t.symbol);
+    render();
     return;
   }
 
-  // clicked same tile = deselect
-  if(gameState.selectedId === tile.id){
-    tile.selected = false;
-    gameState.selectedId = null;
-    renderBoard();
+  if(state.selectedId === t.id){
+    t.selected=false;
+    state.selectedId=null;
+    render();
     return;
   }
 
-  const first = gameState.tiles.find(t => t.id === gameState.selectedId);
-  if(!first){
-    gameState.selectedId = null;
-    tile.selected = true;
-    gameState.selectedId = tile.id;
-    showSymbolInfo(tile.symbol);
-    renderBoard();
-    return;
-  }
+  const first = state.tiles.find(x=>x.id===state.selectedId);
+  if(!first){ state.selectedId=null; return; }
 
-  // check match
-  if(first.symbol.id === tile.symbol.id){
-    first.matched = true;
-    tile.matched = true;
-    first.selected = false;
-    tile.selected = false;
-    gameState.selectedId = null;
-
-    gameState.matches += 1;
-    gameState.remaining -= 2;
-
-    updateFreeTiles();
+  if(first.symbol.id === t.symbol.id){
+    first.matched=true; t.matched=true;
+    first.selected=false; t.selected=false;
+    state.selectedId=null;
+    state.matches += 1;
+    state.remaining -= 2;
+    updateFree();
     updateStats();
-    renderBoard();
-
-    if(gameState.remaining === 0){
-      endLevel();
-    }else{
-      showProverbMessage("Good match!");
-    }
+    render();
+    if(state.remaining===0) win();
+    else showMsg("Good match!");
   }else{
-    // wrong match
-    first.selected = true;
-    tile.selected = true;
-    renderBoard();
-
-    const firstEl = document.querySelector(`.tile[data-id="${first.id}"]`);
-    const secondEl = document.querySelector(`.tile[data-id="${tile.id}"]`);
-    if(firstEl) firstEl.classList.add('wrong-match');
-    if(secondEl) secondEl.classList.add('wrong-match');
-
-    setTimeout(() => {
-      if(firstEl) firstEl.classList.remove('wrong-match');
-      if(secondEl) secondEl.classList.remove('wrong-match');
-      first.selected = false;
-      tile.selected = false;
-      gameState.selectedId = null;
-      renderBoard();
-      showProverbMessage(lossProverbs[Math.floor(Math.random()*lossProverbs.length)]);
+    first.selected=true; t.selected=true;
+    render();
+    const el1 = document.querySelector(`.tile[data-id="${first.id}"]`);
+    const el2 = document.querySelector(`.tile[data-id="${t.id}"]`);
+    if(el1) el1.classList.add('wrong-match');
+    if(el2) el2.classList.add('wrong-match');
+    setTimeout(()=>{
+      first.selected=false; t.selected=false;
+      state.selectedId=null;
+      render();
+      showMsg(lossProverbs[Math.floor(Math.random()*lossProverbs.length)]);
     }, 420);
   }
 }
 
-function findAvailableMatches(){
-  const freeTiles = gameState.tiles.filter(t => !t.matched && t.free);
-  const bySymbol = new Map();
-  for(const t of freeTiles){
-    const k = t.symbol.id;
-    if(!bySymbol.has(k)) bySymbol.set(k, []);
-    bySymbol.get(k).push(t);
-  }
-  const matches = [];
-  for(const arr of bySymbol.values()){
-    if(arr.length >= 2){
-      for(let i=0;i<arr.length;i++){
-        for(let j=i+1;j<arr.length;j++){
-          matches.push([arr[i], arr[j]]);
-        }
-      }
-    }
-  }
-  return matches;
+function hint(){
+  const m = findMatches();
+  if(!m.length) return;
+  const [a,b] = m[0];
+  a.selected=true; b.selected=true;
+  showInfo(a.symbol);
+  render();
+  setTimeout(()=>{ a.selected=false; b.selected=false; render(); }, 1600);
 }
 
-/** ==================== STUCK DETECTION ==================== */
-function startStuckDetection(){
-  clearInterval(gameState.stuckTimer);
-  gameState.stuckTimer = setInterval(() => {
-    const now = new Date();
-    const timeSinceLastMove = (now - gameState.lastMoveTime) / 1000;
-
-    if(timeSinceLastMove > 20 && !gameState.proverbShown && gameState.remaining > 0){
-      showProverbMessage(proverbs[Math.floor(Math.random()*proverbs.length)]);
-      gameState.proverbShown = true;
-    }
-
-    const matches = findAvailableMatches();
-    const active = gameState.tiles.filter(t => !t.matched);
-    if(active.length > 0 && matches.length === 0){
-      handleNoMatches();
-    }
-  }, 1000);
-}
-
-function handleNoMatches(){
-  const active = gameState.tiles.filter(t => !t.matched);
-  if(active.length <= 4){
-    for(const t of active) t.free = true;
-    renderBoard();
-    showProverbMessage("Almost there! Keep going...");
-    return;
-  }
-
-  if(gameState.shufflesRemaining > 0){
-    showProverbMessage("No matches available. Stirring the pot...");
-    shuffleTiles(false);
-  }else{
-    showProverbMessage("Out of shuffles! One free shuffle...");
-    shuffleTiles(true);
-  }
-}
-
-/** ==================== HINT ==================== */
-function provideHint(){
-  const matches = findAvailableMatches();
-  if(matches.length === 0) return;
-
-  const [a,b] = matches[0];
-  a.selected = true;
-  b.selected = true;
-  renderBoard();
-  showSymbolInfo(a.symbol);
-
-  setTimeout(() => {
-    a.selected = false;
-    b.selected = false;
-    renderBoard();
-  }, 1600);
-}
-
-/** ==================== SHUFFLE (keeps hard stacked rules) ==================== */
-function shuffleTiles(force=false){
-  if(!force && gameState.shufflesRemaining <= 0){
-    showProverbMessage("No shuffles left!");
-    return;
-  }
+function shuffleSymbols(force=false){
+  if(!force && state.shufflesRemaining<=0) return showMsg("No shuffles left!");
   if(!force){
-    gameState.shufflesRemaining -= 1;
+    state.shufflesRemaining -= 1;
     updateShuffleCount();
   }
 
-  // clear selection
-  if(gameState.selectedId !== null){
-    const sel = gameState.tiles.find(t => t.id === gameState.selectedId);
-    if(sel) sel.selected = false;
-    gameState.selectedId = null;
+  if(state.selectedId !== null){
+    const sel = state.tiles.find(t=>t.id===state.selectedId);
+    if(sel) sel.selected=false;
+    state.selectedId=null;
   }
 
-  const unmatched = gameState.tiles.filter(t => !t.matched);
+  const u = state.tiles.filter(t=>!t.matched);
+  const syms = u.map(t=>t.symbol);
+  shuffleInPlace(syms);
+  for(let i=0;i<u.length;i++) u[i].symbol = syms[i];
 
-  // shuffle symbols only
-  const symbols = unmatched.map(t => t.symbol);
-  shuffleInPlace(symbols);
-  for(let i=0;i<unmatched.length;i++){
-    unmatched[i].symbol = symbols[i];
-  }
-
-  // re-apply "no identical stacked" rule by swapping if needed
-  const posByColumn = new Map(); // gx:gy -> list of tiles at that column across layers
-  for(const t of unmatched){
-    const col = keyColumn(t.pos);
-    if(!posByColumn.has(col)) posByColumn.set(col, []);
-    posByColumn.get(col).push(t);
-  }
-
-  // try to resolve conflicts with limited swaps
-  const tilesList = [...unmatched];
-  let attempts = 0;
-
-  function hasColumnConflict(){
-    for(const arr of posByColumn.values()){
-      const seen = new Set();
-      for(const t of arr){
-        if(seen.has(t.symbol.id)) return true;
-        seen.add(t.symbol.id);
-      }
-    }
-    return false;
-  }
-
-  while(hasColumnConflict() && attempts < 1500){
-    attempts++;
-    // pick a conflicted column tile and swap with a random tile
-    const conflictedTiles = [];
-    for(const arr of posByColumn.values()){
-      const seen = new Set();
-      for(const t of arr){
-        if(seen.has(t.symbol.id)) conflictedTiles.push(t);
-        else seen.add(t.symbol.id);
-      }
-    }
-    if(conflictedTiles.length === 0) break;
-
-    const t1 = conflictedTiles[Math.floor(Math.random()*conflictedTiles.length)];
-    const t2 = tilesList[Math.floor(Math.random()*tilesList.length)];
-    if(t1 === t2) continue;
-
-    const sTmp = t1.symbol;
-    t1.symbol = t2.symbol;
-    t2.symbol = sTmp;
-  }
-
-  updateFreeTiles();
-  renderBoard();
-  showProverbMessage("Ingredients stirred and rearranged!");
+  updateFree();
+  render();
+  showMsg("Ingredients stirred and rearranged!");
 }
 
-/** ==================== STATS/TIMER/UI ==================== */
 function updateStats(){
-  matchesElement.textContent = String(gameState.matches);
-  remainingElement.textContent = String(gameState.remaining);
-  levelElement.textContent = String(gameState.level);
-  totalTilesElement.textContent = String(gameState.totalTiles);
+  dom.matches.textContent = String(state.matches);
+  dom.remaining.textContent = String(state.remaining);
+  dom.level.textContent = String(state.level);
+  dom.total.textContent = String(state.totalTiles);
   updateShuffleCount();
 }
 
 function updateShuffleCount(){
-  shuffleCountElement.textContent = String(gameState.shufflesRemaining);
-  shuffleWarning.textContent = (gameState.shufflesRemaining === 0)
-    ? "No shuffles remaining — but the game will auto-shuffle if stuck"
+  dom.shuffleCount.textContent = String(state.shufflesRemaining);
+  dom.shuffleWarning.textContent = state.shufflesRemaining===0
+    ? "No shuffles remaining — but the game can still be solvable"
     : "";
 }
 
-function updateButtonStates(){
-  const matches = findAvailableMatches();
-  hintButton.disabled = matches.length === 0;
-  shuffleButton.disabled = (gameState.shufflesRemaining <= 0 && matches.length > 0) ? false : false;
-  // note: shuffle is always allowed when user has shuffles; stuck auto-shuffles when needed
-  if(gameState.shufflesRemaining <= 0){
-    shuffleButton.disabled = true;
-  }
+function updateButtons(){
+  const m = findMatches();
+  dom.hint.disabled = m.length===0;
+  dom.shuffle.disabled = state.shufflesRemaining<=0;
 }
 
 function startTimer(){
-  gameState.startTime = new Date();
-  clearInterval(gameState.timerInterval);
-  gameState.timerInterval = setInterval(() => {
+  state.startTime = new Date();
+  clearInterval(state.timerInterval);
+  state.timerInterval = setInterval(()=>{
     const now = new Date();
-    gameState.elapsedTime = Math.floor((now - gameState.startTime)/1000);
-    const m = Math.floor(gameState.elapsedTime/60);
-    const s = gameState.elapsedTime%60;
-    timeElement.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    state.elapsed = Math.floor((now - state.startTime)/1000);
+    const mm = Math.floor(state.elapsed/60);
+    const ss = state.elapsed%60;
+    dom.time.textContent = `${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
   }, 1000);
 }
 
-/** ==================== LEVEL FLOW ==================== */
-function endLevel(){
-  clearInterval(gameState.timerInterval);
-  clearInterval(gameState.stuckTimer);
-
-  winText.textContent = (gameState.level === 1)
-    ? `🎉 Level ${gameState.level} Complete! Ready for a tougher stacked layout?`
-    : `🎉 Level ${gameState.level} Complete! You're a true pantry master!`;
-
-  winMessage.classList.remove('hidden');
+function win(){
+  clearInterval(state.timerInterval);
+  dom.winText.textContent = `🎉 Level ${state.level} Complete!`;
+  dom.win.classList.remove('hidden');
 }
 
-function resetGame(){
-  clearInterval(gameState.timerInterval);
-  clearInterval(gameState.stuckTimer);
-  winMessage.classList.add('hidden');
-  gameState.level = 1;
-  initGame();
+function reset(){
+  clearInterval(state.timerInterval);
+  dom.win.classList.add('hidden');
+  state.level = 1;
+  init();
 }
 
 function nextLevel(){
-  clearInterval(gameState.timerInterval);
-  clearInterval(gameState.stuckTimer);
-  winMessage.classList.add('hidden');
-  gameState.level += 1;
-  initGame();
+  clearInterval(state.timerInterval);
+  dom.win.classList.add('hidden');
+  state.level += 1;
+  init();
 }
 
-/** ==================== INIT ==================== */
-function initGame(){
-  // If you later want multiple layouts per level, change buildLayout64() based on level.
-  generateWinnableTiles();
-  gameState.selectedId = null;
-  gameState.lastMoveTime = new Date();
-  gameState.proverbShown = false;
-  gameState.shufflesRemaining = 3;
-
-  updateFreeTiles();
+function init(){
+  state.shufflesRemaining = 3;
+  generateWinnable();
+  updateFree();
   updateStats();
   startTimer();
-  startStuckDetection();
-  renderBoard();
-  updateButtonStates();
+  render();
+  showInfo({name:"Select a tile", meaning:"Click any ingredient to learn about its place in African cooking"});
 }
 
-hintButton.addEventListener('click', provideHint);
-shuffleButton.addEventListener('click', () => shuffleTiles(false));
-resetButton.addEventListener('click', resetGame);
-nextLevelButton.addEventListener('click', nextLevel);
-playAgainButton.addEventListener('click', resetGame);
+dom.hint.addEventListener('click', hint);
+dom.shuffle.addEventListener('click', ()=>shuffleSymbols(false));
+dom.reset.addEventListener('click', reset);
+dom.next.addEventListener('click', nextLevel);
+dom.again.addEventListener('click', reset);
 
-window.addEventListener('DOMContentLoaded', initGame);
-
-// Responsive reflow without regenerating the puzzle
-window.addEventListener('resize', () => {
-  renderBoard();
-});
+window.addEventListener('DOMContentLoaded', init);
+window.addEventListener('resize', () => render());
 </script>
 </body>
 </html>
