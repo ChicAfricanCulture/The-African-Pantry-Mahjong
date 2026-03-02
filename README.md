@@ -2,7 +2,7 @@
 <div class="container">
 <h1>The African Pantry Mahjong</h1>
 <p>A cultural matching game exploring the ingredients and foodways of Africa through play.</p>
-<a href="https://chicafricanculture.github.io/african-foodways-data/" class="play-button">PLAY THE GAME</a>
+<a href="https://chicafricanculture.github.io/The-African-Pantry-Mahjong/" class="play-button">PLAY THE GAME</a>
 <hr>
 <h2>About</h2>
 <p>The African Pantry Mahjong transforms classic tile-matching into a journey through African cuisine. Each tile features a black-and-white icon of a real ingredient. Every matched pair reveals a traditional recipe, cultural fact, or cooking wisdom.</p>
